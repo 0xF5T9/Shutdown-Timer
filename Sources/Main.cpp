@@ -206,10 +206,10 @@ int main() {
 	//	Initializing the program parameters..
 	int luaChon;
 	bool q = false;
-	SetConsoleOutputCP(65001);		// Set codepage UTF-8 - hỗ trợ tiếng việt
-	SetWindowSize(60,15);			// Set kích thước cửa sổ
-	SetScreenBufferSize(60, 15);	// Set buffer size cửa sổ
-	DisableResizeWindow();			// Vô hiệu thay đổi kích thước cửa sổ
+	SetConsoleOutputCP(65001);			// Set codepage UTF-8 - hỗ trợ tiếng việt
+	SetWindowSize(60,15);				// Set kích thước cửa sổ
+	SetScreenBufferSize(60, 15);			// Set buffer size cửa sổ
+	DisableResizeWindow();				// Vô hiệu thay đổi kích thước cửa sổ
 	DisableSelection();				// Vô hiệu select
 	ShowScrollbar(0);				// Ẩn thanh kéo
 	SetConsoleTitle(L"Bộ Hẹn Giờ Tắt Máy");
@@ -221,6 +221,6 @@ int main() {
 		luaChon = getInput();
 		q = processOption(luaChon);
 	}
-	// Ending the program..
+	//	Ending the program..
 	return 1;
 }
