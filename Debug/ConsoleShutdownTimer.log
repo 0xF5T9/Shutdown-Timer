@@ -1,4 +1,4 @@
-﻿  Source.cpp
-C:\Users\truon\Desktop\GitHub\Shutdown-Timer\Source.cpp(60,24): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
-C:\Users\truon\Desktop\GitHub\Shutdown-Timer\Source.cpp(202): warning C4715: 'processOption': not all control paths return a value
+﻿  Main.cpp
+C:\Users\truon\Desktop\GitHub\Shutdown-Timer\Sources\Main.cpp(60,24): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\Users\truon\Desktop\GitHub\Shutdown-Timer\Sources\Main.cpp(202): warning C4715: 'processOption': not all control paths return a value
   ConsoleShutdownTimer.vcxproj -> C:\Users\truon\Desktop\GitHub\Shutdown-Timer\Debug\ConsoleShutdownTimer.exe
