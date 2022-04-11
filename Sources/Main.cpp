@@ -2,7 +2,7 @@
 #include <Windows.h>		//	Windows - Windows library
 #include <string>		//	String - C++ Basic library
 
-using namespace std;	//Namespace std
+using namespace std;
 
 /*			Các hàm từ Windows.h - Windows API				 */
 void SetWindowSize(SHORT width, SHORT height)
