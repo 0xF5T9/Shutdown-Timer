@@ -1,5 +1,5 @@
 ﻿#include <iostream>		//	Input Outut Stream - C++ Console library
-#include <Windows.h>
+#include <Windows.h>		//s
 #include <string>		//	String - C++ basic library
 
 using namespace std;
