@@ -1,6 +1,6 @@
 ﻿#include <iostream>		//	Input Outut Stream - C++ Console library
-#include <Windows.h>	// Windows - Windows library
-#include <string>		// String - C++ basic library
+#include <Windows.h>	//	Windows - Windows library
+#include <string>		//	String - C++ basic library
 
 using namespace std;
 
@@ -203,7 +203,7 @@ bool processOption(int i) {
 /*----------------------------------*/
 
 int main() {
-	//	Intialize 
+	//	Initializing the program parameters..
 	int luaChon;
 	bool q = false;
 	SetConsoleOutputCP(65001);		// Set codepage UTF-8 - hỗ trợ tiếng việt
@@ -214,13 +214,13 @@ int main() {
 	ShowScrollbar(0);				// Ẩn thanh kéo
 	SetConsoleTitle(L"Bộ Hẹn Giờ Tắt Máy");
 
-	//	Start
+	//	Start the program..
 	loadAnimation();
 	showMenu();
 	while (q == false) {
 		luaChon = getInput();
 		q = processOption(luaChon);
 	}
-	// End
+	// Ending the program..
 	return 1;
 }
