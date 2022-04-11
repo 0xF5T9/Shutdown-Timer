@@ -16,10 +16,16 @@
     <Filter Include="Source Files\Sources">
       <UniqueIdentifier>{efd4af9b-be1c-4600-92a5-72dbbc1b00d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Sources\Header">
+      <UniqueIdentifier>{e1c62947-5773-4f75-9ec2-34f0b5c8f9e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Headers\Header.h">
+      <Filter>Source Files\Sources\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

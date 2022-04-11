@@ -1,58 +1,35 @@
 ﻿#include <iostream>		//	Input Outut Stream - C++ Console library
 #include <Windows.h>		//	Windows - Windows library
 #include <string>		//	String - C++ Basic library
+#include "../Sources/Headers/Header.h"	//	Prototype Header
 
 using namespace std;
 
-/*			Các hàm từ Windows.h - Windows API				 */
-void SetWindowSize(SHORT width, SHORT height)
-{
-	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+int main() {
+	//	Initializing the program parameters..
+	int luaChon;
+	bool q = false;
+	SetConsoleOutputCP(65001);			// Set codepage UTF-8 - hỗ trợ tiếng việt
+	SetWindowSize(60,15);				// Set kích thước cửa sổ
+	SetScreenBufferSize(60, 15);			// Set buffer size cửa sổ
+	DisableResizeWindow();				// Vô hiệu thay đổi kích thước cửa sổ
+	DisableSelection();				// Vô hiệu select
+	ShowScrollbar(0);				// Ẩn thanh kéo
+	SetConsoleTitle(L"Bộ Hẹn Giờ Tắt Máy");
 
-	SMALL_RECT WindowSize;
-	WindowSize.Top = 0;
-	WindowSize.Left = 0;
-	WindowSize.Right = width;
-	WindowSize.Bottom = height;
-
-	SetConsoleWindowInfo(hStdout, 1, &WindowSize);
+	//	Start the program..
+	loadAnimation();
+	showMenu();
+	while (q == false) {
+		luaChon = getInput();
+		q = processOption(luaChon);
+	}
+	//	Ending the program..
+	return 1;
 }
-void SetScreenBufferSize(SHORT width, SHORT height)
-{
-	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	COORD NewSize;
-	NewSize.X = width;
-	NewSize.Y = height;
 
-	SetConsoleScreenBufferSize(hStdout, NewSize);
-}
-void DisableResizeWindow()
-{
-	HWND hWnd = GetConsoleWindow();
-	SetWindowLong(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) & ~WS_SIZEBOX);
-}
-void ShowScrollbar(BOOL Show)
-{
-	HWND hWnd = GetConsoleWindow();
-	ShowScrollBar(hWnd, SB_BOTH, Show);
-}
-void DisableSelection()
-{
-	HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
-
-	SetConsoleMode(hStdin, ~ENABLE_QUICK_EDIT_MODE);
-}
-void SetColor(int backgound_color, int text_color)
-{
-	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-
-	int color_code = backgound_color * 16 + text_color;
-	SetConsoleTextAttribute(hStdout, color_code);
-}
-/*-----------------------------------------------------------*/
-
-/*			Hàm tự tạo				*/
+/*	Các Hàm tự tạo	*/
 void loadAnimation() {
 	SetColor(0, 14);
 	for (int i = 0; i < 100; i++) {
@@ -200,27 +177,51 @@ bool processOption(int i) {
 		break;
 	}
 }
-/*----------------------------------*/
 
-int main() {
-	//	Initializing the program parameters..
-	int luaChon;
-	bool q = false;
-	SetConsoleOutputCP(65001);			// Set codepage UTF-8 - hỗ trợ tiếng việt
-	SetWindowSize(60,15);				// Set kích thước cửa sổ
-	SetScreenBufferSize(60, 15);			// Set buffer size cửa sổ
-	DisableResizeWindow();				// Vô hiệu thay đổi kích thước cửa sổ
-	DisableSelection();				// Vô hiệu select
-	ShowScrollbar(0);				// Ẩn thanh kéo
-	SetConsoleTitle(L"Bộ Hẹn Giờ Tắt Máy");
 
-	//	Start the program..
-	loadAnimation();
-	showMenu();
-	while (q == false) {
-		luaChon = getInput();
-		q = processOption(luaChon);
-	}
-	//	Ending the program..
-	return 1;
+/*	Các Hàm của Windows.h	*/
+void SetWindowSize(SHORT width, SHORT height)
+{
+	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	SMALL_RECT WindowSize;
+	WindowSize.Top = 0;
+	WindowSize.Left = 0;
+	WindowSize.Right = width;
+	WindowSize.Bottom = height;
+
+	SetConsoleWindowInfo(hStdout, 1, &WindowSize);
+}
+void SetScreenBufferSize(SHORT width, SHORT height)
+{
+	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	COORD NewSize;
+	NewSize.X = width;
+	NewSize.Y = height;
+
+	SetConsoleScreenBufferSize(hStdout, NewSize);
+}
+void DisableResizeWindow()
+{
+	HWND hWnd = GetConsoleWindow();
+	SetWindowLong(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) & ~WS_SIZEBOX);
+}
+void ShowScrollbar(BOOL Show)
+{
+	HWND hWnd = GetConsoleWindow();
+	ShowScrollBar(hWnd, SB_BOTH, Show);
+}
+void DisableSelection()
+{
+	HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+
+	SetConsoleMode(hStdin, ~ENABLE_QUICK_EDIT_MODE);
+}
+void SetColor(int backgound_color, int text_color)
+{
+	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	int color_code = backgound_color * 16 + text_color;
+	SetConsoleTextAttribute(hStdout, color_code);
 }
