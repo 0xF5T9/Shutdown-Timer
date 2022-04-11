@@ -1,6 +1,6 @@
 ﻿#include <iostream>		//	Input Outut Stream - C++ Console library
 #include <Windows.h>	// Windows - Windows library
-#include <string>		// String - C++ basic library test
+#include <string>		// String - C++ basic library
 
 using namespace std;
 
