@@ -2,7 +2,6 @@
 Simple Shutdown Timer (Console)
 
 Compiler: Visual Studio 2019
-
 Architecture: x86
 
 Notes:
