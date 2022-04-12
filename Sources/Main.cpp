@@ -1,7 +1,7 @@
 ﻿#include <iostream>		//	Input Outut Stream - C++ Console library
 #include <Windows.h>		//	Windows - Windows library
 #include <string>		//	String - C++ Basic library
-#include "../Sources/Headers/Header.h"	//	Prototype Header
+#include "../Sources/Headers/Header.h"	//	Prototype & Classes Header
 
 using namespace std;
 Windows WindowsObj;	//	Tạo object để sử dụng các constructor từ class Windows
