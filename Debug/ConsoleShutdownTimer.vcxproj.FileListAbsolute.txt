@@ -1,1 +1,1 @@
-C:\Users\truon\Desktop\GitHub\Shutdown-Timer\Debug\ConsoleShutdownTimer.exe
+C:\Users\truon\Desktop\GitHub\Shutdown-Timer\Debug\ShutdownTimer.exe

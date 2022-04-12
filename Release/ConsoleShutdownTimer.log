@@ -1,8 +1,8 @@
 ﻿  Main.cpp
-C:\Users\truon\Desktop\GitHub\Shutdown-Timer\Sources\Main.cpp(37,24): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+  Timer.cpp
+  Windows.cpp
   Generating code
   Previous IPDB not found, fall back to full compilation.
-C:\Users\truon\Desktop\GitHub\Shutdown-Timer\Sources\Main.cpp(179): warning C4715: 'processOption': not all control paths return a value
   All 102 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
-  ConsoleShutdownTimer.vcxproj -> C:\Users\truon\Desktop\GitHub\Shutdown-Timer\Release\ConsoleShutdownTimer.exe
+  ConsoleShutdownTimer.vcxproj -> C:\Users\truon\Desktop\GitHub\Shutdown-Timer\Release\ShutdownTimer.exe

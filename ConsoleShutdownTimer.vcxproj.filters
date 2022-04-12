@@ -37,5 +37,11 @@
     <ClCompile Include="Sources\Main.cpp">
       <Filter>Source Files\Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Windows.cpp">
+      <Filter>Source Files\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Timer.cpp">
+      <Filter>Source Files\Sources</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
