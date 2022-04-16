@@ -1,8 +1,0 @@
-﻿  Main.cpp
-  Timer.cpp
-  Windows.cpp
-  Generating code
-  Previous IPDB not found, fall back to full compilation.
-  All 102 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Finished generating code
-  ConsoleShutdownTimer.vcxproj -> C:\Users\truon\Desktop\GitHub\Shutdown-Timer\Release\ShutdownTimer.exe
