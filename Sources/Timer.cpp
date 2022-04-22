@@ -1,11 +1,12 @@
-﻿#include <iostream>		//	Input Outut Stream - C++ Console library
-#include <Windows.h>		//	Windows - Windows library
-#include <string>		//	String - C++ Basic library
-#include "../Sources/Headers/Header.h"	//	Prototype Header
+﻿#include <iostream>		
+#include <Windows.h>		
+#include <string>		
+#include "../Sources/Headers/Header.h"
 
-Windows WindowsObjTimer;	//	Tạo object để sử dụng các constructor từ class Windows
+/*	Tạo object từ classes (Create object from classes)	*/
+Windows WindowsObjTimer;	
 
-/*	Các định nghĩa Hàm của Timer	*/
+/*	Định nghĩa các hàm class 'Timer' (Define 'Timer' class functions)	*/
 void Timer::loadAnimation() {
 	WindowsObjTimer.SetColor(0, 14);
 	for (double i = 0; i < 100; i++) {

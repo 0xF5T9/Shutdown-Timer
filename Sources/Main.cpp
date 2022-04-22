@@ -1,30 +1,32 @@
-﻿#include <iostream>		//	Input Outut Stream - C++ Console library
-#include <Windows.h>		//	Windows - Windows library
-#include <string>		//	String - C++ Basic library
-#include "../Sources/Headers/Header.h"	//	Prototype & Classes Header
+﻿#include <iostream>	
+#include <Windows.h>
+#include <string>
+#include "../Sources/Headers/Header.h"
 
 using namespace std;
-Windows WindowsObj;	//	Tạo object để sử dụng các constructor từ class Windows
-Timer TimerObj;	//	Tạo object để sử dụng các constructor từ class Timer
+
+/*	Tạo object từ classes (Create object from classes)	*/
+Windows WindowsMainObj;	
+Timer TimerMainObj;	
 
 int main() {
 	//	Initializing the program parameters..
 	int luaChon;
 	bool q = false;
-	SetConsoleOutputCP(65001);			// Set codepage UTF-8 - hỗ trợ tiếng việt
-	WindowsObj.SetWindowSize(60,15);				// Set kích thước cửa sổ
-	WindowsObj.SetScreenBufferSize(60, 15);			// Set buffer size cửa sổ
-	WindowsObj.DisableResizeWindow();				// Vô hiệu thay đổi kích thước cửa sổ
-	WindowsObj.DisableSelection();				// Vô hiệu select
-	WindowsObj.ShowScrollbar(0);				// Ẩn thanh kéo
+	SetConsoleOutputCP(65001);			// Hỗ trợ utf-8 (Support utf-8)
+	WindowsMainObj.SetWindowSize(60,15);				// Set kích thước cửa sổ (Set window size)
+	WindowsMainObj.SetScreenBufferSize(60, 15);			// Set buffer size cửa sổ (Set window buffer size)
+	WindowsMainObj.DisableResizeWindow();				// Vô hiệu thay đổi kích thước cửa sổ (Disable window resize)
+	WindowsMainObj.DisableSelection();				// Vô hiệu select (Disable console selection)
+	WindowsMainObj.ShowScrollbar(0);				// Ẩn thanh kéo (Hide console scroll bar)
 	SetConsoleTitle(L"Bộ Hẹn Giờ Tắt Máy");
 
 	//	Start the program..
-	TimerObj.loadAnimation();
-	TimerObj.showMenu();
+	TimerMainObj.loadAnimation();
+	TimerMainObj.showMenu();
 	while (q == false) {
-		luaChon = TimerObj.getInput();
-		q = TimerObj.processOption(luaChon);
+		luaChon = TimerMainObj.getInput();
+		q = TimerMainObj.processOption(luaChon);
 	}
 	//	Ending the program..
 	return 1;

@@ -1,9 +1,9 @@
-﻿#include <iostream>		//	Input Outut Stream - C++ Console library
-#include <Windows.h>		//	Windows - Windows library
-#include <string>		//	String - C++ Basic library
-#include "../Sources/Headers/Header.h"	//	Prototype Header
+﻿#include <iostream>		
+#include <Windows.h>		
+#include <string>		
+#include "../Sources/Headers/Header.h"
 
-/*	Các định nghĩa Hàm của Windows.h	*/
+/*	Định nghĩa các hàm class 'Windows' (Define 'Windows' class functions)	*/
 void Windows::SetWindowSize(SHORT width, SHORT height)
 {
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);

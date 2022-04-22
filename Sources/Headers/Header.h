@@ -1,8 +1,16 @@
 ﻿#pragma once
 
-/*	Class: Windows - Các hàm prototype của Windows.h	*/
 class Windows {
+private:
+
 public:
+	Windows() {
+		//	Constructor
+	}
+	~Windows() {
+		//	Destructor
+	}
+	/*	Khai báo hàm mẫu(Declare function prototypes)	*/
 	void SetWindowSize(SHORT width, SHORT height);
 	void SetScreenBufferSize(SHORT width, SHORT height);
 	void DisableResizeWindow();
@@ -13,7 +21,16 @@ public:
 
 /*	Class: Timer - Các hàm prototype của Timer	*/
 class Timer {
+private:
+
 public:
+	Timer() {
+		//	Constructor
+	}
+	~Timer() {
+		//	Destructor
+	}
+	/*	Khai báo hàm mẫu(Declare function prototypes)	*/
 	void loadAnimation();
 	void dotAnimation();
 	void showMenu();
