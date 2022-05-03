@@ -1,10 +1,8 @@
-﻿#include <iostream>		
-#include <Windows.h>		
-#include <string>		
-#include "../Sources/Headers/Header.h"
+#include <Windows.h>
+#include "../Sources/Headers/winapi.h"
 
-/*	Định nghĩa các hàm class 'Windows' (Define 'Windows' class functions)	*/
-void Windows::SetWindowSize(SHORT width, SHORT height)
+/*	Define 'winapi' class functions	*/
+void winapi::SetWindowSize(SHORT width, SHORT height)
 {
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -16,7 +14,8 @@ void Windows::SetWindowSize(SHORT width, SHORT height)
 
 	SetConsoleWindowInfo(hStdout, 1, &WindowSize);
 }
-void Windows::SetScreenBufferSize(SHORT width, SHORT height)
+
+void winapi::SetScreenBufferSize(SHORT width, SHORT height)
 {
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -26,23 +25,27 @@ void Windows::SetScreenBufferSize(SHORT width, SHORT height)
 
 	SetConsoleScreenBufferSize(hStdout, NewSize);
 }
-void Windows::DisableResizeWindow()
+
+void winapi::DisableResizeWindow()
 {
 	HWND hWnd = GetConsoleWindow();
 	SetWindowLong(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) & ~WS_SIZEBOX);
 }
-void Windows::ShowScrollbar(BOOL Show)
+
+void winapi::ShowScrollbar(BOOL Show)
 {
 	HWND hWnd = GetConsoleWindow();
 	ShowScrollBar(hWnd, SB_BOTH, Show);
 }
-void Windows::DisableSelection()
+
+void winapi::DisableSelection()
 {
 	HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
 
 	SetConsoleMode(hStdin, ~ENABLE_QUICK_EDIT_MODE);
 }
-void Windows::SetColor(int backgound_color, int text_color)
+
+void winapi::SetColor(int backgound_color, int text_color)
 {
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 

@@ -1,33 +1,15 @@
-﻿#include <iostream>		
-#include <Windows.h>		
-#include <string>		
-#include "../Sources/Headers/Header.h"
+﻿#include <iostream>
+#include <string>
+#include "../Sources/Headers/menu.h"
+#include "../Sources/Headers/winapi.h"
+#include "../Sources/Headers/animation.h"
 
-/*	Tạo object từ classes (Create object from classes)	*/
-Windows WindowsObjTimer;	
-
-/*	Định nghĩa các hàm class 'Timer' (Define 'Timer' class functions)	*/
-void Timer::loadAnimation() {
-	WindowsObjTimer.SetColor(0, 14);
-	for (double i = 0; i < 100; i++) {
-		int y = (int)round(i);
-		std::cout << "Đang tải (" << y << "%)";
-		if (i < 100) i *= 1.4;
-		system("cls");
-	}
-}
-void Timer::dotAnimation() {
-	for (int i = 0; i < 3; i++) {
-		Sleep(500);
-		std::cout << ".";
-	}
-}
-
-void Timer::showMenu() {
-	WindowsObjTimer.SetColor(0, 11);
+/*	Define 'menu' class functions	*/
+void menu::ShowMenu() const {
+	WinAPI->SetColor(0, 11);
 	std::cout << "Menu\n";
 	std::cout << "-----\n";
-	WindowsObjTimer.SetColor(0, 14);
+	WinAPI->SetColor(0, 14);
 	std::cout << "\n";
 	std::cout << "1. Hẹn giờ tắt máy trong 1 tiếng\n";
 	std::cout << "2. Hẹn giờ tắt máy trong 2 tiếng\n";
@@ -37,85 +19,81 @@ void Timer::showMenu() {
 	std::cout << "6. Thoát chương trình\n";
 	std::cout << std::endl;
 }
-int Timer::getInput() {
-	int i;
-	bool hopLe = false;
-	while (hopLe == false) {
+int menu::SelectOption() {
+	int iOption;
+	bool ValidOption = false;
+	while (ValidOption == false) {
 		std::cout << "Nhập lựa chọn: ";
-		std::cin >> i;
-		if (i > 0 && i < 7) {
-			hopLe = true;
+		std::cin >> iOption;
+		if (iOption > 0 && iOption < 7) {
+			ValidOption = true;
 		}
 		std::cin.clear();
 		std::cin.ignore(10000, '\n');
 		system("cls");
-		showMenu();
+		ShowMenu();
 	}
-	return i;
+	return iOption;
 }
 
-bool Timer::processOption(int i) {
-	bool q;
-	q = false;
-	switch (i) {
+bool menu::ProcessOption(int _option) {
+	bool EXITPROGRAM = false;
+	switch (_option) {
 	case 1:
 		system("shutdown -a");
 		system("shutdown -s -t 3600");
 		system("cls");
-		showMenu();
-		WindowsObjTimer.SetColor(0, 10);
+		ShowMenu();
+		WinAPI->SetColor(0, 10);
 		std::cout << "Máy tính sẽ được tắt trong vòng 1 tiếng.\n";
-		WindowsObjTimer.SetColor(0, 11);
-		dotAnimation();
-		WindowsObjTimer.SetColor(0, 14);
+		WinAPI->SetColor(0, 11);
+		std::cout << " > "; Animation->DotAnimation(1000); std::cout << std::flush;
+		WinAPI->SetColor(0, 14);
 		system("cls");
-		showMenu();
-		return q;
+		ShowMenu();
 		break;
 	case 2:
 		system("shutdown -a");
 		system("shutdown -s -t 7200");
 		system("cls");
-		showMenu();
-		WindowsObjTimer.SetColor(0, 10);
+		ShowMenu();
+		WinAPI->SetColor(0, 10);
 		std::cout << "Máy tính sẽ được tắt trong vòng 2 tiếng.\n";
-		WindowsObjTimer.SetColor(0, 11);
-		dotAnimation();
-		WindowsObjTimer.SetColor(0, 14);
+		WinAPI->SetColor(0, 11);
+		std::cout << " > "; Animation->DotAnimation(1000); std::cout << std::flush;
+		WinAPI->SetColor(0, 14);
 		system("cls");
-		showMenu();
-		return q;
+		ShowMenu();
 		break;
 	case 3:
 		system("shutdown -a");
 		system("shutdown -s -t 14400");
 		system("cls");
-		showMenu();
-		WindowsObjTimer.SetColor(0, 10);
+		ShowMenu();
+		WinAPI->SetColor(0, 10);
 		std::cout << "Máy tính sẽ được tắt trong vòng 4 tiếng.\n";
-		WindowsObjTimer.SetColor(0, 11);
-		dotAnimation();
-		WindowsObjTimer.SetColor(0, 14);
+		WinAPI->SetColor(0, 11);
+		std::cout << " > "; Animation->DotAnimation(1000); std::cout << std::flush;
+		WinAPI->SetColor(0, 14);
 		system("cls");
-		showMenu();
-		return q;
+		ShowMenu();
 		break;
 	case 4: {
 		int h;
 		int ph;
 		system("shutdown -a");
 		system("cls");
-		showMenu();
+		ShowMenu();
 		std::cout << "Nhập số tiếng: ";
 		std::cin >> h;
 		while (h < 1 || h > 24) {
 			std::cin.clear();
 			std::cin.ignore(10000, '\n');
 			system("cls");
-			showMenu();
-			WindowsObjTimer.SetColor(0, 12);
+			ShowMenu();
+			WinAPI->SetColor(0, 12);
 			std::cout << "Tối thiểu 1 tiếng hoặc tối đa 24 tiếng.\n";
-			WindowsObjTimer.SetColor(0, 14);
+			WinAPI->SetColor(0, 14);
 			std::cout << "Nhập số tiếng: ";
 			std::cin >> h;
 		}
@@ -123,36 +101,34 @@ bool Timer::processOption(int i) {
 		std::string ph2 = std::to_string(ph);
 		system(("shutdown -s -t " + ph2).c_str());
 		system("cls");
-		showMenu();
-		WindowsObjTimer.SetColor(0, 10);
+		ShowMenu();
+		WinAPI->SetColor(0, 10);
 		std::cout << "Máy tính sẽ được tắt trong vòng " << h << " tiếng.\n";
-		WindowsObjTimer.SetColor(0, 11);
-		dotAnimation();
-		WindowsObjTimer.SetColor(0, 14);
+		WinAPI->SetColor(0, 11);
+		std::cout << " > "; Animation->DotAnimation(1000); std::cout << std::flush;
+		WinAPI->SetColor(0, 14);
 		system("cls");
-		showMenu();
-		return q;
+		ShowMenu();
 		break;
 	}
 	case 5:
 		system("shutdown -a");
 		system("cls");
-		showMenu();
-		WindowsObjTimer.SetColor(0, 10);
+		ShowMenu();
+		WinAPI->SetColor(0, 10);
 		std::cout << "Đã huỷ lịch trình tắt máy hiện tại.\n";
-		WindowsObjTimer.SetColor(0, 11);
-		dotAnimation();
-		WindowsObjTimer.SetColor(0, 14);
+		WinAPI->SetColor(0, 11);
+		std::cout << " > "; Animation->DotAnimation(1000); std::cout << std::flush;
+		WinAPI->SetColor(0, 14);
 		system("cls");
-		showMenu();
-		return q;
+		ShowMenu();
 		break;
 	case 6:
-		q = true;
-		return q;
+		system("cls");
+		EXITPROGRAM = true;
 		break;
 	default:
-		return q;
 		break;
 	}
+	return EXITPROGRAM;
 }
