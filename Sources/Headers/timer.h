@@ -93,7 +93,7 @@ private:
 	// This function reading config file or generate one if the file doesn't exists
 	void Config();
 
-	// This function simulate application loading progress
+	// This function simulate application loading progress (FOR FUN)
 	void Loading();
 
 public:
@@ -101,9 +101,9 @@ public:
 	/* Constructors & Destructor */
 	Timer() 
 	{
-		Config(); // Read setting file
+		Config(); // Read config file or generate one if the file doesn't exists
 		SetPriorityClass(GetCurrentProcess(), THREAD_PRIORITY_LOWEST); // Run the program on lowest priority for optimize performance
-		SetConsoleOutputCP(65001); // Support UTF-8 unicode
+		SetConsoleOutputCP(65001); // Support UTF-8 unicode for the console
 		if (this->Language == "en") SetConsoleTitle(L"Simple Shutdown Timer v2.0"); 
 		else if (this->Language == "vi") { SetConsoleTitle(L"Bộ Hẹn Giờ v2.0"); }
 
@@ -114,8 +114,7 @@ public:
 		SetScreenBufferSize(60, 15); // Set window buffer size
 		if (this->EnableResize == false) DisableResizeWindow(); // Disable resize console
 		if (this->EnableResize == false) DisableCtrButton(0, 0, 1); // Disable Minimize & Maximize buttons
-		
-		if (this->FasterLoad == false) this->Loading();
+		if (this->FasterLoad == false) this->Loading(); // This skip loading animation
 	}
 	~Timer() {}
 	
