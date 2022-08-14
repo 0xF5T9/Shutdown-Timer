@@ -102,10 +102,12 @@ short Timer::SelectOption()
 			SetColor(0, 14);
 			std::cout << "> ";
 			SetColor(0, 12);
-			if (this->Language == "en") std::cout << "Invalid option\n";
-			else if (this->Language == "vi") std::cout << "Lựa chọn không hợp lệ\n";
+			if (this->Language == "en") std::cout << "Invalid option\n\n";
+			else if (this->Language == "vi") std::cout << "Lựa chọn không hợp lệ\n\n";
 			SetColor(0, 15);
-			system("pause");
+			if (this->Language == "en") std::cout << "< Press any key to continue >\n";
+			else if (this->Language == "vi") std::cout << "< Bấm phím bất kỳ để tiếp tục >\n";
+			system("pause >nul");
 		}
 	}
 
@@ -186,10 +188,12 @@ bool Timer::ProcessOption(short option)
 					else
 					{
 						SetColor(0, 12);
-						if (this->Language == "en") std::cout << "Must be at least 1+ hour and no more than 24 hours\n";
-						else if (this->Language == "vi") std::cout << "Tối thiểu 1 tiếng và tối đa 24 tiếng\n";
+						if (this->Language == "en") std::cout << "Must be at least 1+ hour and no more than 24 hours\n\n";
+						else if (this->Language == "vi") std::cout << "Tối thiểu 1 tiếng và tối đa 24 tiếng\n\n";
 						SetColor(0, 15);
-						system("pause");
+						if (this->Language == "en") std::cout << "< Press any key to continue >\n";
+						else if (this->Language == "vi") std::cout << "< Bấm phím bất kỳ để tiếp tục >\n";
+						system("pause >nul");
 					}
 				}
 				system("cls");

@@ -99,7 +99,7 @@ void DisableCtrButton(bool Close, bool Min, bool Max)
 
 Timer* InitializeApplication()
 {
-	SetConsoleTitle(L"Initializng ...");
+	SetConsoleTitle(L"Initializing ...");
 	Timer* RetObject = new Timer();
 	return RetObject;
 }
