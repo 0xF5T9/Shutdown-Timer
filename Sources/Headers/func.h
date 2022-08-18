@@ -1,110 +1,43 @@
 #pragma once
-#define NOMINMAX
 
+#include "resource.h"
 #include <iostream>
-#include <string>
-#include <iomanip>
 #include <Windows.h>
-#include <limits>
-#include "timer.h"
+#include <TlHelp32.h>
+#include <tchar.h>
+#include <string>
 
-short GetRand(short minimum, short maximum)
-{	
-	// Formula: rand() % (max_number + 1 - minimum_number) + minimum_number
-	short ret = rand() % (maximum + 1 - minimum) + minimum;
-	return ret;
-}
-
-void ClearCinBuffer()
+/*
+*   This function execute system command line via CreateProcess()
+*/
+void ExecCmd(std::string sCmdLine)
 {
-	std::cin.clear();
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-}
+    /*-------------------------------------------------------------*/
+    // Initialize basic parameters for CreateProcess() function
+    // Using CreateProcessA() instead because the project using unicode character set
+    STARTUPINFOA si;
+    PROCESS_INFORMATION pi;
+    // Set the size of the structures
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+    /*-------------------------------------------------------------*/
 
-void DotAnimation(unsigned short dot_number ,unsigned int milliseconds, short flush)
-{
-	for (int i = 0; i < dot_number; i++)
-	{
-		std::cout << ".";
-		Sleep(milliseconds);
-	}
-	
-	if (flush == 1) std::cout << "\n";
-	else if (flush == 2) std::cout << std::endl;
-}
-
-void SetColor(int backgound_color, int text_color)
-{
-	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-
-	int color_code = backgound_color * 16 + text_color;
-	SetConsoleTextAttribute(hStdout, color_code);
-}
-
-void DisableSelection()
-{
-	HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
-
-	SetConsoleMode(hStdin, ~ENABLE_QUICK_EDIT_MODE);
-}
-
-void SetWindowSize(SHORT width, SHORT height)
-{
-	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-
-	SMALL_RECT WindowSize;
-	WindowSize.Top = 0;
-	WindowSize.Left = 0;
-	WindowSize.Right = width;
-	WindowSize.Bottom = height;
-
-	SetConsoleWindowInfo(hStdout, 1, &WindowSize);
-}
-
-void SetScreenBufferSize(SHORT width, SHORT height)
-{
-	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-
-	COORD NewSize;
-	NewSize.X = width;
-	NewSize.Y = height;
-
-	SetConsoleScreenBufferSize(hStdout, NewSize);
-}
-
-void DisableResizeWindow()
-{
-	HWND hWnd = GetConsoleWindow();
-	SetWindowLong(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) & ~WS_SIZEBOX);
-}
-
-void DisableCtrButton(bool Close, bool Min, bool Max)
-{
-	HWND hWnd = GetConsoleWindow();
-	HMENU hMenu = GetSystemMenu(hWnd, false);
-
-	if (Close == 1)
-	{
-		DeleteMenu(hMenu, SC_CLOSE, MF_BYCOMMAND);
-	}
-	if (Min == 1)
-	{
-		DeleteMenu(hMenu, SC_MINIMIZE, MF_BYCOMMAND);
-	}
-	if (Max == 1)
-	{
-		DeleteMenu(hMenu, SC_MAXIMIZE, MF_BYCOMMAND);
-	}
-}
-
-Timer* InitializeApplication()
-{
-	SetConsoleTitle(L"Initializing ...");
-	Timer* RetObject = new Timer();
-	return RetObject;
-}
-
-void Terminate(Timer* Timer_Ptr)
-{
-	delete Timer_Ptr;
+    /*-------------------------------------------------------------*/
+    // Execute system command via CreateProcess()
+    CreateProcessA("C:\\Windows\\System32\\cmd.exe",   // The path
+        (LPSTR)sCmdLine.c_str(),    // Command line
+        NULL,           // Process handle not inheritable
+        NULL,           // Thread handle not inheritable
+        FALSE,          // Set handle inheritance to FALSE
+        CREATE_NO_WINDOW, // "CREATE_NO_WINDOW" flag prevent command prompt from showing up
+        NULL,           // Use parent's environment block
+        NULL,           // Use parent's starting directory 
+        &si,            // Pointer to STARTUPINFO structure
+        &pi             // Pointer to PROCESS_INFORMATION structure (removed extra parentheses)
+    );
+    // Close process and thread handles. 
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+    /*-------------------------------------------------------------*/
 }
