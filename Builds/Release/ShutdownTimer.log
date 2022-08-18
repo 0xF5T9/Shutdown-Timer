@@ -4,4 +4,4 @@
   Previous IPDB not found, fall back to full compilation.
   All 182 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
-  ShutdownTimer.vcxproj -> C:\Users\novar\Desktop\WindowsProject1\Builds\Release\Output\Shutdown Timer.exe
+  ShutdownTimer.vcxproj -> C:\Users\novar\Desktop\C++\Shutdown-Timer\Builds\Release\Output\Shutdown Timer.exe
