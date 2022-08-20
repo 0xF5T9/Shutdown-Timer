@@ -41,3 +41,12 @@ void ExecCmd(std::string sCmdLine)
     CloseHandle(pi.hThread);
     /*-------------------------------------------------------------*/
 }
+
+/*
+*   This function exec SendMessage() to all HWND handles
+*   In this case, the aim is to set the default font for all HWND handles.
+*/
+bool CALLBACK SetFont(HWND child, LPARAM font) {
+    SendMessage(child, WM_SETFONT, font, true);
+    return true;
+}
