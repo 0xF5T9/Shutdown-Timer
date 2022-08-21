@@ -27,6 +27,7 @@ HINSTANCE hInst;                                // Main Instance                
 static const unsigned short cMode = 3;                                                    //
                                                                                           //
 // Custom HWND Handles                                                                    //
+HWND cTest;
 HWND cTextField1;                                                                         //
 HWND cButton1;                                                                            //
                                                                                           //
@@ -60,7 +61,7 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);               //
 BOOL                InitInstance(HINSTANCE, int);                       //
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);                //
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);                  //
-INT_PTR CALLBACK    Default(HWND, UINT, WPARAM, LPARAM);                //
+INT_PTR CALLBACK    TimerD1(HWND, UINT, WPARAM, LPARAM);                //
 /*----------------------------------------------------------------------*/
 
 
@@ -76,7 +77,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_PROJECT1, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_SHUTDOWNTIMERWIN32, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // Perform application initialization:
@@ -85,7 +86,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PROJECT1));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_SHUTDOWNTIMERWIN32));
 
     MSG msg;
 
@@ -123,7 +124,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground = cBrush_null; //Original: wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_PROJECT1);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_SHUTDOWNTIMERWIN32);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_ICON1));
 
@@ -275,7 +276,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                 Sleep(10);
                                 ExecCmd("/c shutdown -s -t 3600");
                             }
-                            ::MessageBox(hWnd, L"Máy tính sẽ được tắt sau 1 tiếng", L"Shutdown Timer v3.0.0", MB_OK);
+                            //::MessageBox(hWnd, L"Máy tính sẽ được tắt sau 1 tiếng", L"Shutdown Timer v3.0.0", MB_OK);
+                            //cMessageBox(L"Máy tính sẽ được tắt sau 1 tiếng");
+                            DialogBox(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1);
                         }
                         break;
                     }
@@ -480,8 +483,9 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 // Message handler for default box (Testing, unused)
-INT_PTR CALLBACK Default(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK TimerD1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    SetDlgItemText(hDlg, IDC_TIMERD1, L"123"); // continue work...
     UNREFERENCED_PARAMETER(lParam);
     switch (message)
     {

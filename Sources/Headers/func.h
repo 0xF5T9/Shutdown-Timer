@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "resource.h"
 #include <iostream>
@@ -49,4 +49,56 @@ void ExecCmd(std::string sCmdLine)
 bool CALLBACK SetFont(HWND child, LPARAM font) {
     SendMessage(child, WM_SETFONT, font, true);
     return true;
+}
+
+int cMessageBox(std::wstring lpText = L"", bool EnableButtonResponse = 0, std::wstring lpCaption = L"Shutdown Timer v3.0.0")
+{
+    int msgboxID = MessageBox(
+        NULL,
+        lpText.c_str(),
+        lpCaption.c_str(),
+        MB_OK
+    );
+
+    if (EnableButtonResponse == 1)
+    {
+        if (msgboxID == IDYES)
+        {
+            ::MessageBox(NULL, L"YES BUTTON TRIGGERED", L"", MB_OK);
+        }
+        else if (msgboxID == IDNO)
+        {
+            ::MessageBox(NULL, L"NO BUTTON TRIGGERED", L"", MB_OK);
+        }
+        else if (msgboxID == IDOK)
+        {
+            ::MessageBox(NULL, L"OK BUTTON TRIGGERED", L"", MB_OK);
+        }
+        else if (msgboxID == IDABORT)
+        {
+            ::MessageBox(NULL, L"ABORT BUTTON TRIGGERED", L"", MB_OK);
+        }
+        else if (msgboxID == IDCANCEL)
+        {
+            ::MessageBox(NULL, L"CANCEL BUTTON TRIGGERED", L"", MB_OK);
+        }
+        else if (msgboxID == IDCONTINUE)
+        {
+            ::MessageBox(NULL, L"CONTINUE BUTTON TRIGGERED", L"", MB_OK);
+        }
+        else if (msgboxID == IDIGNORE)
+        {
+            ::MessageBox(NULL, L"IGNORE BUTTON TRIGGERED", L"", MB_OK);
+        }
+        else if (msgboxID == IDRETRY)
+        {
+            ::MessageBox(NULL, L"RETRY BUTTON TRIGGERED", L"", MB_OK);
+        }
+        else if (msgboxID == IDTRYAGAIN)
+        {
+            ::MessageBox(NULL, L"RETRY AGAIN BUTTON TRIGGERED", L"", MB_OK);
+        }
+    }
+
+    return msgboxID;
 }

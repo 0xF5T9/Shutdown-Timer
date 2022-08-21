@@ -8,13 +8,14 @@
 #define IDD_ABOUTBOX                    103
 #define IDM_ABOUT                       104
 #define IDM_EXIT                        105
-#define IDI_PROJECT1                    107
+#define IDI_SHUTDOWNTIMERWIN32                    107
 #define IDI_SMALL                       108
-#define IDC_PROJECT1                    109
-#define IDD_TIMER1H                     110
+#define IDC_SHUTDOWNTIMERWIN32                    109
+#define IDD_TIMERD1                     110
 #define IDR_MAINFRAME                   128
 #define IDI_ICON1                       130
 #define IDC_STATIC                      -1
+#define IDC_TIMERD1						111
 
 // Next default values for new objects
 // 
