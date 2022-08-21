@@ -47,14 +47,10 @@ HWND cButton5;                                                                  
 // Custom brushes & fonts                                                                 //
 HBRUSH cBrush_null = CreateSolidBrush(RGB(NULL, NULL, NULL)); // Default null color       //
 HBRUSH cBrush_gray = CreateSolidBrush(RGB(240, 240, 240));    // Default gray color       //
-HFONT cFont_MSShellDlg = CreateFont(20, 0, 0, 0,              // Main Font                //
+HFONT cFont_MSShellDlg = CreateFont(17, 0, 0, 0x1,              // Main Font                //
     FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET,                                       //
     OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,                                  //
     DEFAULT_PITCH | FF_DONTCARE, TEXT("MS Shell Dlg"));                                   //
-HFONT cFont_Consolas = CreateFont(20, 0, 0, 0,                                            //
-    FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET,                                       //
-    OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,                                  //
-    DEFAULT_PITCH | FF_DONTCARE, TEXT("Consolas"));                                       //
 /*----------------------------------------------------------------------------------------*/
 
 
@@ -182,66 +178,61 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 cTextField1 = CreateWindowW(L"STATIC", L"Tắt máy tính sau 1 tiếng",
                     WS_VISIBLE | WS_CHILD,
                     30, 20, 180, 20, hWnd, NULL, NULL, NULL);
-                //SendMessage(cTextField1, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
 
                 cButton1 = CreateWindowW(L"BUTTON", L"Chọn",
                     WS_VISIBLE | WS_CHILD,
                     205, 18, 60, 25, hWnd,
                     (HMENU)1, NULL, NULL);
-                //SendMessage(cButton1, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
 
                 cTextField2 = CreateWindowW(L"STATIC", L"Tắt máy tính sau 2 tiếng",
                     WS_VISIBLE | WS_CHILD,
                     30, 50, 180, 20, hWnd, NULL, NULL, NULL);
-                //SendMessage(cTextField2, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
 
                 cButton2 = CreateWindowW(L"BUTTON", L"Chọn",
                     WS_VISIBLE | WS_CHILD,
                     205, 48, 60, 25, hWnd,
                     (HMENU)2, NULL, NULL);
-                //SendMessage(cButton2, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
 
                 cTextField3 = CreateWindowW(L"STATIC", L"Tắt máy tính sau 4 tiếng",
                     WS_VISIBLE | WS_CHILD,
                     30, 80, 180, 20, hWnd, NULL, NULL, NULL);
-                //SendMessage(cTextField3, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
 
                 cButton3 = CreateWindowW(L"BUTTON", L"Chọn",
                     WS_VISIBLE | WS_CHILD,
                     205, 78, 60, 25, hWnd,
                     (HMENU)3, NULL, NULL);
-                //SendMessage(cButton3, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
 
                 cTextField4_1 = CreateWindowW(L"STATIC", L"Nhập số tiếng",
                     WS_VISIBLE | WS_CHILD,
                     50, 110, 180, 20, hWnd, NULL, NULL, NULL);
-                //SendMessage(cTextField4_1, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
 
                 cTextField4_2 = CreateWindowW(L"EDIT", L"",
                     WS_VISIBLE | WS_CHILD | WS_BORDER,
                     155, 108, 25, 24, hWnd,
                     NULL, NULL, NULL);
-                //SendMessage(cTextField4_2, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
 
                 cButton4 = CreateWindowW(L"BUTTON", L"Chọn",
                     WS_VISIBLE | WS_CHILD,
                     205, 108, 60, 25, hWnd,
                     (HMENU)4, NULL, NULL);
-                //SendMessage(cButton4, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
 
                 cTextField5 = CreateWindowW(L"STATIC", L"Huỷ lịch tắt máy",
                     WS_VISIBLE | WS_CHILD,
                     50, 140, 180, 20, hWnd, NULL, NULL, NULL);
-                //SendMessage(cTextField5, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
 
                 cButton5 = CreateWindowW(L"BUTTON", L"Chọn",
                     WS_VISIBLE | WS_CHILD,
                     205, 138, 60, 25, hWnd,
                     (HMENU)5, NULL, NULL);
-                //SendMessage(cButton5, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
 
                 EnumChildWindows(hWnd, (WNDENUMPROC)SetFont, (LPARAM)cFont_MSShellDlg); // Set default font for the application
-                // SendMessage(cButton5, WM_SETFONT, (LPARAM)cFont_Consolas, TRUE); // Set font manually for a handle
+                {   // Set font manually for handles
+                    /*SendMessage(cButton1, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
+                    SendMessage(cButton2, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
+                    SendMessage(cButton3, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
+                    SendMessage(cButton4, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);
+                    SendMessage(cButton5, WM_SETFONT, (LPARAM)cFont_MSShellDlg, TRUE);*/
+                }
             }
             break;
         }
