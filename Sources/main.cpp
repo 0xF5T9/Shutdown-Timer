@@ -276,9 +276,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                 Sleep(10);
                                 ExecCmd("/c shutdown -s -t 3600");
                             }
-                            //::MessageBox(hWnd, L"Máy tính sẽ được tắt sau 1 tiếng", L"Shutdown Timer v3.0.0", MB_OK);
-                            //cMessageBox(L"Máy tính sẽ được tắt sau 1 tiếng");
-                            DialogBox(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1);
+                            DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Máy tính sẽ được tắt sau 1 tiếng");
                         }
                         break;
                     }
@@ -301,7 +299,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                 Sleep(10);
                                 ExecCmd("/c shutdown -s -t 7200");
                             }
-                            ::MessageBox(hWnd, L"Máy tính sẽ được tắt sau 2 tiếng", L"Shutdown Timer v3.0.0", MB_OK);
+                            DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Máy tính sẽ được tắt sau 2 tiếng");
                         }
                         break;
                     }
@@ -325,7 +323,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                 Sleep(10);
                                 ExecCmd("/c shutdown -s -t 14400");
                             }
-                            ::MessageBox(hWnd, L"Máy tính sẽ được tắt sau 4 tiếng", L"Shutdown Timer v3.0.0", MB_OK);
+                            DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Máy tính sẽ được tắt sau 4 tiếng");
                         }
                         break;
                     }
@@ -334,7 +332,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     {
                         {
                             int t_ret = GetWindowTextW(cTextField4_2, &cTextField4_saved[0], 3);
-                            if (t_ret == 0) ::MessageBox(hWnd, L"Nhập tối thiểu 1 tiếng hoặc tối đa 24 tiếng", L"", MB_OK);
+                            if (t_ret == 0) DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Tối thiểu 1 tiếng và tối đa 24 tiếng");
                             else
                             {
                                 std::wstring wstr_1 = cTextField4_saved;
@@ -363,9 +361,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                         //ExecCmd("/c shutdown -s -t 14400");
                                     }
                                     std::wstring w_str_2 = L"Máy tính sẽ được tắt sau " + std::to_wstring(t_int) + L" tiếng";
-                                    ::MessageBox(hWnd, w_str_2.c_str(), L"Shutdown Timer v3.0.0", MB_OK);
+                                    DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)w_str_2.c_str());
                                 }
-                                else ::MessageBox(hWnd, L"Nhập tối thiểu 1 tiếng hoặc tối đa 24 tiếng", L"", MB_OK);
+                                else DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Tối thiểu 1 tiếng và tối đa 24 tiếng");
                             }
                             DestroyWindow(cTextField4_2);
                             cTextField4_2 = CreateWindowW(L"EDIT", L"",
@@ -392,7 +390,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                             {
                                 ExecCmd("/c shutdown -a");
                             }
-                            ::MessageBox(hWnd, L"Tất cả lịch tắt máy đã được huỷ", L"Shutdown Timer v3.0.0", MB_OK);
+                            DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Tất cả lịch tắt máy đã được huỷ");
                         }
                         break;
                     }
@@ -482,15 +480,17 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     return (INT_PTR)FALSE;
 }
 
-// Message handler for default box (Testing, unused)
+// Message handler for default notification dialog
 INT_PTR CALLBACK TimerD1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    SetDlgItemText(hDlg, IDC_TIMERD1, L"123"); // continue work...
     UNREFERENCED_PARAMETER(lParam);
     switch (message)
     {
     case WM_INITDIALOG:
+    {
+        SetDlgItemText(hDlg, IDC_TIMERD1, (LPCWSTR)lParam);
         return (INT_PTR)TRUE;
+    }
 
     case WM_COMMAND:
         if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
