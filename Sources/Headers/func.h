@@ -51,6 +51,9 @@ bool CALLBACK SetFont(HWND child, LPARAM font) {
     return true;
 }
 
+/*
+*   Alternative of ::MessageBox()
+*/
 int cMessageBox(std::wstring lpText = L"", bool EnableButtonResponse = 0, std::wstring lpCaption = L"Shutdown Timer v3.0.0")
 {
     int msgboxID = MessageBox(
@@ -101,4 +104,27 @@ int cMessageBox(std::wstring lpText = L"", bool EnableButtonResponse = 0, std::w
     }
 
     return msgboxID;
+}
+
+
+/*
+*   These functions handle global pointers used to store temporary content (Transfer contents between windows)
+*   cPostGlobal()         | Allocate the pointer
+*   ClearGlobalPointers() | Deallocate all global pointers
+*/
+
+// Forward declaration global pointers
+extern std::wstring* globalwstr_ptr;
+
+void cPostGlobal(std::wstring*& wstr_ptr, std::wstring wstr_content)
+{
+    wstr_ptr = new std::wstring(wstr_content);
+}
+void ClearGlobalPointers()
+{
+    if (globalwstr_ptr != nullptr)
+    {
+        delete globalwstr_ptr;
+        globalwstr_ptr = nullptr;
+    }
 }

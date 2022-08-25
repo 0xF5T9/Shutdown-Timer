@@ -18,16 +18,20 @@
 
 
 /*----------------------------------------------------------------------------------------*/
-// Global Variables                                                                       //
+// [Global Variables]:                                                                    //
+                                                                                          //
+// Main Variables Parameters                                                              //
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text                     //
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name             //
-HINSTANCE hInst;                                // Main Instance                          //
+HINSTANCE hInst;                                // main instance                          //
+                                                                                          //
+//  Global Pointers (For moving data between windows)                                     //
+std::wstring* globalwstr_ptr = nullptr;         // wide-string datatype                   //
                                                                                           //
 // Custom Program Parameters                                                              //
 static const unsigned short cMode = 3;                                                    //
                                                                                           //
 // Custom HWND Handles                                                                    //
-HWND cTest;
 HWND cTextField1;                                                                         //
 HWND cButton1;                                                                            //
                                                                                           //
@@ -48,7 +52,7 @@ HWND cButton5;                                                                  
 // Custom brushes & fonts                                                                 //
 HBRUSH cBrush_null = CreateSolidBrush(RGB(NULL, NULL, NULL)); // Default null color       //
 HBRUSH cBrush_gray = CreateSolidBrush(RGB(240, 240, 240));    // Default gray color       //
-HFONT cFont_MSShellDlg = CreateFont(17, 0, 0, 0x1,              // Main Font                //
+HFONT cFont_MSShellDlg = CreateFont(17, 0, 0, 0x1,            // Main Font                //
     FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET,                                       //
     OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,                                  //
     DEFAULT_PITCH | FF_DONTCARE, TEXT("MS Shell Dlg"));                                   //
