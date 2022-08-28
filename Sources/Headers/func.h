@@ -7,16 +7,17 @@
 #include <tchar.h>
 #include <string>
 #include <fstream>
-#include <Uxtheme.h>
+#include <Uxtheme.h> // Requires "uxtheme.lib" to work
 
-/*
-*   This function execute system command line via CreateProcess()
-*/
+/*---------------------------------------------------------------*/
+/* This function execute system command line via CreateProcess() */
+/* ExecCmd()                                                     */
+/*---------------------------------------------------------------*/
 void ExecCmd(std::string sCmdLine)
 {
     /*-------------------------------------------------------------*/
-    // Initialize basic parameters for CreateProcess() function
-    // Using CreateProcessA() instead because the project using unicode character set
+    // Set initial parameters for CreateProcess() function
+    // Used variant CreateProcessA() (ANSI)
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
     // Set the size of the structures
@@ -27,16 +28,16 @@ void ExecCmd(std::string sCmdLine)
 
     /*-------------------------------------------------------------*/
     // Execute system command via CreateProcess()
-    CreateProcessA("C:\\Windows\\System32\\cmd.exe",   // The path
-        (LPSTR)sCmdLine.c_str(),    // Command line
-        NULL,           // Process handle not inheritable
-        NULL,           // Thread handle not inheritable
-        FALSE,          // Set handle inheritance to FALSE
-        CREATE_NO_WINDOW, // "CREATE_NO_WINDOW" flag prevent command prompt from showing up
-        NULL,           // Use parent's environment block
-        NULL,           // Use parent's starting directory 
-        &si,            // Pointer to STARTUPINFO structure
-        &pi             // Pointer to PROCESS_INFORMATION structure (removed extra parentheses)
+    CreateProcessA("C:\\Windows\\System32\\cmd.exe",    // The path
+        (LPSTR)sCmdLine.c_str(),                        // Command line
+        NULL,               // Process handle not inheritable
+        NULL,               // Thread handle not inheritable
+        FALSE,              // Set handle inheritance to FALSE
+        CREATE_NO_WINDOW,   // "CREATE_NO_WINDOW" flag prevent command prompt from showing up
+        NULL,               // Use parent's environment block
+        NULL,               // Use parent's starting directory 
+        &si,                // Pointer to STARTUPINFO structure
+        &pi                 // Pointer to PROCESS_INFORMATION structure (removed extra parentheses)
     );
     // Close process and thread handles. 
     CloseHandle(pi.hProcess);
@@ -44,18 +45,22 @@ void ExecCmd(std::string sCmdLine)
     /*-------------------------------------------------------------*/
 }
 
-/*
-*   This function exec SendMessage() to all HWND handles
-*   In this case, the aim is to set the default font for all HWND handles.
-*/
+
+/*-----------------------------------------------------------------------*/
+/* This function execute SendMessage() to all HWND handles               */
+/* In this case, the aim is to set the default font for all HWND handles */
+/* SetFont()                                                             */
+/*-----------------------------------------------------------------------*/
 bool CALLBACK SetFont(HWND child, LPARAM font) {
     SendMessage(child, WM_SETFONT, font, true);
     return true;
 }
 
-/*
-*   Alternative of ::MessageBox()
-*/
+
+/*-------------------------------*/
+/* Alternative of ::MessageBox() */
+/* cMessageBox()                 */
+/*-------------------------------*/
 int cMessageBox(std::wstring lpText = L"", bool EnableButtonResponse = 0, std::wstring lpCaption = L"Shutdown Timer v3.5.0")
 {
     int msgboxID = MessageBox(
@@ -109,11 +114,11 @@ int cMessageBox(std::wstring lpText = L"", bool EnableButtonResponse = 0, std::w
 }
 
 
-/*
-*   These functions handle global pointers used to store temporary content (Transfer contents between windows)
-*   cPostGlobal()         | Allocate the pointer
-*   ClearGlobalPointers() | Deallocate all global pointers
-*/
+/*------------------------------------------------------------------------------------------------------------*/
+/* These functions handle global pointers used to store temporary content (Transfer contents between windows) */
+/* cPostGlobal()         | Allocate the pointer                                                               */
+/* ClearGlobalPointers() | Deallocate all global pointers                                                     */
+/*------------------------------------------------------------------------------------------------------------*/
 
 // Forward declaration global pointers
 extern std::wstring* globalwstr_ptr;
@@ -131,13 +136,14 @@ void ClearGlobalPointers()
     }
 }
 
-/*
-*   These functions handle menu items & application setting file
-*   LoadConfig()    | Read and load setting file on program start
-*   ResetSettings() | Reset setting file to default
-*   RefreshMenu()   | Synchronize settings with the interface menu
-*   FastModeSwitch  | Update setting file (FastMode)
-*/
+
+/*----------------------------------------------------------------*/
+/* These functions handle menu items & application setting file   */
+/* LoadConfig()    | Read and load setting file on program start  */
+/* ResetSettings() | Reset setting file to default                */
+/* RefreshMenu()   | Synchronize settings with the interface menu */
+/* FastModeSwitch  | Update setting file (FastMode)               */
+/*----------------------------------------------------------------*/
 
 // Forward declaration program parameters
 extern bool cFastMode;
