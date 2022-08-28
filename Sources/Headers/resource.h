@@ -7,10 +7,12 @@
 #define IDS_APP_TITLE                   103
 #define IDD_ABOUTBOX                    103
 #define IDM_ABOUT                       104
+#define IDM_FASTMODE					112
+#define IDM_RESETSETTINGS				113
 #define IDM_EXIT                        105
-#define IDI_SHUTDOWNTIMERWIN32                    107
+#define IDI_SHUTDOWNTIMERWIN32          107
 #define IDI_SMALL                       108
-#define IDC_SHUTDOWNTIMERWIN32                    109
+#define IDC_SHUTDOWNTIMERWIN32          109
 #define IDD_TIMERD1                     110
 #define IDR_MAINFRAME                   128
 #define IDI_ICON1                       130

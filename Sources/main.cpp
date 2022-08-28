@@ -1,5 +1,5 @@
 ﻿/*
-*   Project: Shutdown Timer v3.0.0
+*   Project: Shutdown Timer v3.5.0
 *        Win32 UI Introduction
 */
 
@@ -18,18 +18,19 @@
 
 
 /*----------------------------------------------------------------------------------------*/
-// [Global Variables]:                                                                    //
+// [Global Variables]                                                                     //
                                                                                           //
 // Main Variables Parameters                                                              //
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text                     //
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name             //
 HINSTANCE hInst;                                // main instance                          //
                                                                                           //
-//  Global Pointers (For moving data between windows)                                     //
+// Global Pointers (For moving data between windows)                                      //
 std::wstring* globalwstr_ptr = nullptr;         // wide-string datatype                   //
                                                                                           //
 // Custom Program Parameters                                                              //
 static const unsigned short cMode = 3;                                                    //
+bool cFastMode = false;                                                                   //
                                                                                           //
 // Custom HWND Handles                                                                    //
 HWND cTextField1;                                                                         //
@@ -78,6 +79,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: Place code here.
+    LoadConfig(); // Load the settings from config file
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -127,8 +129,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground = cBrush_null; //Original: wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_SHUTDOWNTIMERWIN32);
+    wcex.hbrBackground = cBrush_null; // Load custom brush instead | Original: wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    // wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_SHUTDOWNTIMERWIN32); // Load menu in WM_CREATE instead
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_ICON1));
 
@@ -148,7 +150,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
-   HWND hWnd = CreateWindowW(szWindowClass, L"Shutdown Timer v3.0.0", WS_OVERLAPPEDWINDOW2,
+   HWND hWnd = CreateWindowW(szWindowClass, L"Shutdown Timer v3.5.0", WS_OVERLAPPEDWINDOW2,
       CW_USEDEFAULT, 0, 315, 250, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
@@ -180,6 +182,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case WM_CREATE:
         {
             {
+                /*-----------------------------------------------------------------------*/
+                // Load the menu to main window handle                                   //
+                HMENU hMenu = LoadMenu(NULL, MAKEINTRESOURCE(IDC_SHUTDOWNTIMERWIN32));   //
+                SetMenu(hWnd, hMenu);                                                    //
+                RefreshMenu(hWnd);                                                       //
+                /*-----------------------------------------------------------------------*/
+
+                // Apply menu color (not implemented yet)
+                {
+                    /*MENUINFO mi = { 0 };
+                    mi.cbSize = sizeof(mi);
+                    mi.fMask = MIM_BACKGROUND | MIM_APPLYTOSUBMENUS;
+                    mi.hbrBack = cBrush_null;
+                    hMenu = ::GetMenu(hWnd);
+                    SetMenuInfo(hMenu, &mi);*/
+                }
+
                 cTextField1 = CreateWindowW(L"STATIC", L"Tắt máy tính sau 1 tiếng",
                     WS_VISIBLE | WS_CHILD,
                     30, 20, 180, 20, hWnd, NULL, NULL, NULL);
@@ -280,10 +299,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                 Sleep(10);
                                 ExecCmd("/c shutdown -s -t 3600");
                             }
-                            DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Máy tính sẽ được tắt sau 1 tiếng");
+                            if (cFastMode == 0) DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Máy tính sẽ được tắt sau 1 tiếng");
                         }
                         break;
                     }
+
                     case 2:
                     {
                         {
@@ -303,11 +323,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                 Sleep(10);
                                 ExecCmd("/c shutdown -s -t 7200");
                             }
-                            DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Máy tính sẽ được tắt sau 2 tiếng");
+                            if (cFastMode == 0) DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Máy tính sẽ được tắt sau 2 tiếng");
                         }
                         break;
                     }
-                
+
                     case 3:
                     {
                         {
@@ -327,16 +347,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                 Sleep(10);
                                 ExecCmd("/c shutdown -s -t 14400");
                             }
-                            DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Máy tính sẽ được tắt sau 4 tiếng");
+                            if (cFastMode == 0) DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Máy tính sẽ được tắt sau 4 tiếng");
                         }
                         break;
                     }
-                
+
                     case 4:
                     {
                         {
                             int t_ret = GetWindowTextW(cTextField4_2, &cTextField4_saved[0], 3);
-                            if (t_ret == 0) DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Tối thiểu 1 tiếng và tối đa 24 tiếng");
+                            if (t_ret == 0) { if (cFastMode == 0) DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Tối thiểu 1 tiếng và tối đa 24 tiếng"); }
                             else
                             {
                                 std::wstring wstr_1 = cTextField4_saved;
@@ -365,9 +385,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                         //ExecCmd("/c shutdown -s -t 14400");
                                     }
                                     std::wstring w_str_2 = L"Máy tính sẽ được tắt sau " + std::to_wstring(t_int) + L" tiếng";
-                                    DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)w_str_2.c_str());
+                                    if (cFastMode == 0) DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)w_str_2.c_str());
                                 }
-                                else DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Tối thiểu 1 tiếng và tối đa 24 tiếng");
+                                else { if (cFastMode == 0) DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Tối thiểu 1 tiếng và tối đa 24 tiếng"); }
                             }
                             DestroyWindow(cTextField4_2);
                             cTextField4_2 = CreateWindowW(L"EDIT", L"",
@@ -378,7 +398,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         }
                         break;
                     }
-                
+
                     case 5:
                     {
                         {
@@ -394,7 +414,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                             {
                                 ExecCmd("/c shutdown -a");
                             }
-                            DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Tất cả lịch tắt máy đã được huỷ");
+                            if (cFastMode == 0) DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_TIMERD1), hWnd, TimerD1, (LPARAM)L"Tất cả lịch tắt máy đã được huỷ");
                         }
                         break;
                     }
@@ -403,6 +423,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     {
                         {
                             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+                        }
+                        break;
+                    }
+
+                    case IDM_FASTMODE:
+                    {
+                        {
+                            
+                            HMENU hMenu = GetMenu(hWnd);
+
+                            if (cFastMode)
+                            {
+                                
+                                ModifyMenu(hMenu, IDM_FASTMODE, MF_BYCOMMAND | MF_STRING, IDM_FASTMODE, L"Chế Độ Nhanh: OFF");
+                                FastModeSwitch(0);
+                            }
+                            else
+                            {
+                                ModifyMenu(hMenu, IDM_FASTMODE, MF_BYCOMMAND | MF_STRING | MF_CHECKED, IDM_FASTMODE, L"Chế Độ Nhanh: ON");
+                                FastModeSwitch(1);
+                            }
+
+                            cFastMode = !cFastMode;
+                        }
+                        break;
+                    }
+
+                    case IDM_RESETSETTINGS:
+                    {
+                        {
+                            ResetSettings();
+                            exit(1);
                         }
                         break;
                     }
