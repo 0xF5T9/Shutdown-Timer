@@ -1,5 +1,5 @@
 # Shutdown-Timer
-Simple Shutdown Timer
+Simple Shutdown Timer (Win32)
 
 Compiler: Visual Studio 2022+
 
