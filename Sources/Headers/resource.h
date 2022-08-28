@@ -1,9 +1,9 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by Project1.rc
+// Used by ProjectShutdownTimer.rc
 //
 #define IDC_MYICON                      2
-#define IDD_PROJECT1_DIALOG             102
+#define IDD_SHUTDOWNTIMER_DIALOG        102
 #define IDS_APP_TITLE                   103
 #define IDD_ABOUTBOX                    103
 #define IDM_ABOUT                       104

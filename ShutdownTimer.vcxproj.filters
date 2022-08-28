@@ -37,15 +37,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Sources\Resources\Project1.rc">
+    <ResourceCompile Include="Sources\Resources\ProjectShutdownTimer.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Sources\Resources\small.ico">
+    <Image Include="Sources\Resources\default_win32_small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Sources\Resources\Project1.ico">
+    <Image Include="Sources\Resources\default_win32.ico">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Sources\Resources\SPA.ico">
