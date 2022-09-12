@@ -61,7 +61,7 @@ bool CALLBACK SetFont(HWND child, LPARAM font) {
 /* Alternative of ::MessageBox() */
 /* cMessageBox()                 */
 /*-------------------------------*/
-int cMessageBox(std::wstring lpText = L"", bool EnableButtonResponse = 0, std::wstring lpCaption = L"Shutdown Timer v3.5.0")
+int cMessageBox(std::wstring lpText = L"", bool EnableButtonResponse = 0, std::wstring lpCaption = L"Shutdown Timer v3.5.2")
 {
     int msgboxID = MessageBox(
         NULL,
