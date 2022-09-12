@@ -156,9 +156,14 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
+
+   int c_width = 0;
+   int c_height = 0;
+   GetDesktopResolution(c_width, c_height);
+
    hInst = hInstance; // Store instance handle in our global variable
    HWND hWnd = CreateWindowW(szWindowClass, L"Shutdown Timer v3.5.2", WS_OVERLAPPEDWINDOW2,
-      CW_USEDEFAULT, 0, 315, 250, nullptr, nullptr, hInstance, nullptr);
+      (c_width / 2) - 157, (c_height / 2) - 125, 315, 250, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
