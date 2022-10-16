@@ -8,6 +8,7 @@
 #include <Uxtheme.h>
 #include <commctrl.h>
 #include <Dwmapi.h>
+#include <mmsystem.h>
 #include "solution.h"
 #include "global.h"
 
@@ -109,6 +110,8 @@ namespace cWin32
 		hIcon_Minimize = (HICON)LoadImageW(NULL, L"minimize.ico", IMAGE_ICON, 50, 50, LR_LOADFROMFILE);
 		hIcon_Minimize_H = (HICON)LoadImageW(NULL, L"minimize_h.ico", IMAGE_ICON, 50, 50, LR_LOADFROMFILE);
 		hIcon_Confirm = (HICON)LoadImageW(NULL, L"tick.ico", IMAGE_ICON, 100, 100, LR_LOADFROMFILE);
+		hIcon_Github = (HICON)LoadImageW(NULL, L"github.ico", IMAGE_ICON, 80, 33, LR_LOADFROMFILE);
+		hIcon_Github_H = (HICON)LoadImageW(NULL, L"github_h.ico", IMAGE_ICON, 80, 33, LR_LOADFROMFILE);
 		*/
 
 		hIcon_Close = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON2), IMAGE_ICON, 50, 50, NULL);
@@ -116,6 +119,8 @@ namespace cWin32
 		hIcon_Minimize = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON4), IMAGE_ICON, 50, 50, NULL);
 		hIcon_Minimize_H = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON5), IMAGE_ICON, 50, 50, NULL);
 		hIcon_Confirm = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON6), IMAGE_ICON, 100, 100, NULL);
+		hIcon_Github = (HICON)LoadImageW(NULL, L"github.ico", IMAGE_ICON, 80, 33, LR_LOADFROMFILE);
+		hIcon_Github_H = (HICON)LoadImageW(NULL, L"github_h.ico", IMAGE_ICON, 80, 33, LR_LOADFROMFILE);
 
 		return true;
 	}
@@ -194,6 +199,7 @@ namespace cWin32
 		ButtonCtrl_EMON = CreateWindowW(L"BUTTON", L"ON",
 			WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON,
 			207, 309, 55, 30, hWnd, (HMENU)BUTTON_EMODEON, NULL, NULL);
+
 		if (cExtraMode)
 		{
 			SendMessageW(ButtonCtrl_EMON, BM_SETCHECK, BST_CHECKED, NULL);
@@ -210,6 +216,11 @@ namespace cWin32
 
 		ButtonCtrl_CancelTimer = CreateWindowW(L"BUTTON", L"Huỷ tất cả lịch tắt máy",
 			WS_VISIBLE | WS_CHILD | BS_CENTER, 49, 344, 200, 33, hWnd, (HMENU)BUTTON_CANCEL, NULL, NULL);
+
+		SSCtrl_Github = CreateWindowW(L"STATIC", L"",
+			WS_VISIBLE | WS_CHILD | SS_NOTIFY | SS_ICON | SS_CENTERIMAGE, 500-80-40, 344, 80+24, 33+11, hWnd, (HMENU)BUTTON_GITHUB, NULL, NULL);
+		SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github);
+		SetWindowSubclass(SSCtrl_Github, &SSButtonHover, 1, NULL);
 
 		{
 			{

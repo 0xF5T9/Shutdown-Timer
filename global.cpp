@@ -22,9 +22,11 @@ HWND SSCtrl_Text2, CBCtrl_2;
 HWND SSCtrl_Text3, CBCtrl_3;
 HWND SSCtrl_Text4, ButtonCtrl_FMOFF, ButtonCtrl_FMON;
 HWND SSCtrl_Text5, ButtonCtrl_EMOFF, ButtonCtrl_EMON;
+HWND SSCtrl_Github;
 
 // HICON & BITMAP MEDIAS:
 HICON hIcon_Close, hIcon_Close_H, hIcon_Minimize, hIcon_Minimize_H, hIcon_Confirm;
+HICON hIcon_Github, hIcon_Github_H;
 
 // RECTS:
 RECT rTitle = { 0, 0, 500, 50 };

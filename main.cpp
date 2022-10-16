@@ -1,5 +1,5 @@
 ﻿/*
- *	...
+ *	Shutdown Timer (WinAPI)
  */
 
 #include "Sources/Headers/func.h"
@@ -264,6 +264,13 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 					break;
 				}
 
+				case BUTTON_GITHUB:
+				{
+					ShellExecuteW(NULL, L"open", L"https://github.com/0xF5T9/Shutdown-Timer", NULL, NULL, SW_SHOWNORMAL);
+					SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github);
+					break;
+				}
+
 				default:
 					break;
 			}
@@ -480,6 +487,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 LRESULT CALLBACK SSButtonHover(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
+	static bool isSet = 0;
 	switch (uMsg)
 	{
 		case WM_NCDESTROY:
@@ -494,22 +502,52 @@ LRESULT CALLBACK SSButtonHover(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			{
 				if (LOWORD(lParam) >= 15 && LOWORD(lParam) <= 35 && HIWORD(lParam) >= 15 && HIWORD(lParam) <= 35)
 				{
-					SendMessageW(SSCtrl_Close, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Close_H);
+					if (!isSet)
+					{
+						SendMessageW(SSCtrl_Close, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Close_H);
+						isSet = 1;
+					}	
 				}
 				else
 				{
 					SendMessageW(SSCtrl_Close, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Close);
+					isSet = 0;
 				}
 			}
 			else if (hWnd == SSCtrl_Minimize)
 			{
 				if (LOWORD(lParam) >= 15 && LOWORD(lParam) <= 35 && HIWORD(lParam) >= 15 && HIWORD(lParam) <= 35)
 				{
-					SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize_H);
+					if (!isSet)
+					{
+						SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize_H);
+						isSet = 1;
+					}
 				}
 				else
 				{
 					SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize);
+					isSet = 0;
+				}
+			}
+			else if (hWnd == SSCtrl_Github)
+			{
+				if (LOWORD(lParam) >= 20 && LOWORD(lParam) <= 84 && HIWORD(lParam) >= 11 && HIWORD(lParam) <= 33)
+				{
+					if (!isSet)
+					{
+						SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github_H);
+						isSet = 1;
+					}
+				}
+				else
+				{
+					if (isSet)
+					{
+						SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github);
+						isSet = 0;
+					}
+						
 				}
 			}
 				
