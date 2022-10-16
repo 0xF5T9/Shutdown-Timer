@@ -29,7 +29,7 @@ int WINAPI wWinMain(
 	int cWidth = 0, cHeight = 0;
 	cExtra::GetDesktopResolution(cWidth, cHeight);
 	G_hWnd = CreateWindowW(
-		L"sdTimerApp1", L"",
+		L"sdTimerApp1", L"Shutdown Timer",
 		C_WS_OVERLAPPEDWINDOW | WS_THICKFRAME | WS_VISIBLE,
 		(cWidth / 2) - 251, (cHeight / 2) - 201,
 		502, 401+2,
@@ -133,7 +133,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 							if (time <= 0 || time > 24)
 							{
 								SetWindowTextW(EditCtrl_1e, L"");
-								if (!cFastMode) MessageBoxW(hWnd, L"Nhập tối thiểu 1 tiếng hoặc tối đa 24 tiếng", L"", MB_OK | MB_ICONINFORMATION);
+								if (!cFastMode) MessageBoxW(hWnd, L"Enter minimum 1 hour or maximum 24 hours", L"", MB_OK | MB_ICONINFORMATION);
 								break;
 							}
 							SetWindowTextW(EditCtrl_1e, L"");
@@ -153,17 +153,17 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 							int iMB;
 							if (cFastMode)
 								iMB = IDYES;
-							else iMB = MessageBoxW(hWnd, L"Máy tính đã có lịch tắt máy\nHuỷ lịch tắt máy hiện tại?\n(Sẽ ghi đè bằng lịch hẹn mới)", L"", MB_YESNO | MB_ICONINFORMATION);
+							else iMB = MessageBoxW(hWnd, L"The PC already have schedule set\nCancel current schedule?\n(Old schedule will be overwritten)", L"", MB_YESNO | MB_ICONINFORMATION);
 							if (iMB == IDYES)
 							{
 								AbortSystemShutdownW(tBuffer_2);
 								InitiateShutdownW(tBuffer_2, NULL, (time * 3600), dMode, SHTDN_REASON_MINOR_OTHER);
-								if (!cFastMode) MessageBoxW(hWnd, (L"Máy tính sẽ được tắt sau " + std::to_wstring(time) + L" tiếng").c_str(), L"", MB_OK | MB_ICONINFORMATION);
+								if (!cFastMode) MessageBoxW(hWnd, (L"The PC will be shutdown after " + std::to_wstring(time) + L" hour(s)").c_str(), L"", MB_OK | MB_ICONINFORMATION);
 								break;
 							}
 							else break;
 						}
-						if (!cFastMode) MessageBoxW(hWnd, (L"Máy tính sẽ được tắt sau " + std::to_wstring(time) + L" tiếng").c_str(), L"", MB_OK | MB_ICONINFORMATION);
+						if (!cFastMode) MessageBoxW(hWnd, (L"The PC will be shutdown after " + std::to_wstring(time) + L" hour(s)").c_str(), L"", MB_OK | MB_ICONINFORMATION);
 					}
 					else
 					{
@@ -179,7 +179,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 						if (time <= 0 || time > 1440)
 						{
 							SetWindowTextW(EditCtrl_1, L"");
-							if (!cFastMode) MessageBoxW(hWnd, L"Nhập tối thiểu 1 phút hoặc tối đa 1440 phút", L"", MB_OK | MB_ICONINFORMATION);
+							if (!cFastMode) MessageBoxW(hWnd, L"Enter minimum 1 minute or maximum 1440 minutes", L"", MB_OK | MB_ICONINFORMATION);
 							break;
 						}
 						SetWindowTextW(EditCtrl_1, L"");
@@ -197,17 +197,17 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 							int iMB;
 							if (cFastMode)
 								iMB = IDYES;
-							else iMB = MessageBoxW(hWnd, L"Máy tính đã có lịch tắt máy\nHuỷ lịch tắt máy hiện tại?\n(Sẽ ghi đè bằng lịch hẹn mới)", L"", MB_YESNO | MB_ICONINFORMATION);
+							else iMB = MessageBoxW(hWnd, L"The PC already have schedule set\nCancel current schedule?\n(Old schedule will be overwritten)", L"", MB_YESNO | MB_ICONINFORMATION);
 							if (iMB == IDYES)
 							{
 								AbortSystemShutdownW(tBuffer_2);
 								InitiateShutdownW(tBuffer_2, NULL, (time * 60), dMode, SHTDN_REASON_MINOR_OTHER);
-								if (!cFastMode) MessageBoxW(hWnd, (L"Máy tính sẽ được tắt sau " + std::to_wstring(time) + L" phút").c_str(), L"", MB_OK | MB_ICONINFORMATION);
+								if (!cFastMode) MessageBoxW(hWnd, (L"The PC will be shutdown after " + std::to_wstring(time) + L" minute(s)").c_str(), L"", MB_OK | MB_ICONINFORMATION);
 								break;
 							}
 							else break;
 						}
-						if (!cFastMode) MessageBoxW(hWnd, (L"Máy tính sẽ được tắt sau " + std::to_wstring(time) + L" phút").c_str(), L"", MB_OK | MB_ICONINFORMATION);
+						if (!cFastMode) MessageBoxW(hWnd, (L"The PC will be shutdown after " + std::to_wstring(time) + L" minute(s)").c_str(), L"", MB_OK | MB_ICONINFORMATION);
 					}
 
 					break;
@@ -221,6 +221,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 					GetComputerNameW(tBuffer, &machineNameSize);
 
 					AbortSystemShutdownW(tBuffer);
+					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 
 					break;
 				}
@@ -228,12 +229,14 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 				case BUTTON_FMODEON:
 				{
 					cFastMode = 1;
+					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 					break;
 				}
 
 				case BUTTON_FMODEOFF:
 				{
 					cFastMode = 0;
+					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 					break;
 				}
 
@@ -248,6 +251,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 					sType = 0;
 					cExtraMode = 1;
+					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 					break;
 				}
 
@@ -261,6 +265,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 					sType = 0;
 					cExtraMode = 0;
+					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 					break;
 				}
 
@@ -268,6 +273,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 				{
 					ShellExecuteW(NULL, L"open", L"https://github.com/0xF5T9/Shutdown-Timer", NULL, NULL, SW_SHOWNORMAL);
 					SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github);
+					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 					break;
 				}
 
@@ -451,7 +457,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 			{
 				case VK_F1:
 				{
-					MessageBoxW(NULL, L"Triggered debug WM_KEYDOWN event, exiting the program", L"[DEBUG]", MB_OK);
+					// MessageBoxW(NULL, L"Triggered debug WM_KEYDOWN event, exiting the program", L"[DEBUG]", MB_OK);
 					DestroyWindow(hWnd);
 					break;
 				}

@@ -64,6 +64,18 @@ IDI_ICON5               ICON                    "Raws\\minimize_h.ico"
 
 IDI_ICON6               ICON                    "Raws\\tick.ico"
 
+IDI_ICON7               ICON                    "Raws\\github.ico"
+
+IDI_ICON8               ICON                    "Raws\\github_h.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// WAVE
+//
+
+IDR_WAVE1               WAVE                    "Raws\\TingSound.wav"
+
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 

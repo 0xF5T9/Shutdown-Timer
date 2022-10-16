@@ -119,8 +119,8 @@ namespace cWin32
 		hIcon_Minimize = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON4), IMAGE_ICON, 50, 50, NULL);
 		hIcon_Minimize_H = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON5), IMAGE_ICON, 50, 50, NULL);
 		hIcon_Confirm = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON6), IMAGE_ICON, 100, 100, NULL);
-		hIcon_Github = (HICON)LoadImageW(NULL, L"github.ico", IMAGE_ICON, 80, 33, LR_LOADFROMFILE);
-		hIcon_Github_H = (HICON)LoadImageW(NULL, L"github_h.ico", IMAGE_ICON, 80, 33, LR_LOADFROMFILE);
+		hIcon_Github = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON7), IMAGE_ICON, 80, 33, NULL);
+		hIcon_Github_H = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON8), IMAGE_ICON, 80, 33, NULL);
 
 		return true;
 	}
@@ -140,10 +140,10 @@ namespace cWin32
 		SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize);
 		SetWindowSubclass(SSCtrl_Minimize, &SSButtonHover, 1, NULL);
 
-		SSCtrl_Title1 = CreateWindowW(L"STATIC", L" Bộ hẹn giờ:",
+		SSCtrl_Title1 = CreateWindowW(L"STATIC", L" Timers:",
 			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 70, 420, 30, hWnd, NULL, NULL, NULL);
 
-		SSCtrl_Text1 = CreateWindowW(L"STATIC", L"→ Thời gian:",
+		SSCtrl_Text1 = CreateWindowW(L"STATIC", L"→   Time:",
 			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 117, 420, 30, hWnd, NULL, NULL, NULL);
 
 		CBCtrl_1 = CreateWindowW(L"COMBOBOX", L"",
@@ -155,13 +155,13 @@ namespace cWin32
 		EditCtrl_1e = CreateWindowW(L"EDIT", L"",
 			WS_VISIBLE | WS_CHILD | WS_BORDER | ES_NUMBER, 155, 115, 110, 30, hWnd, NULL, NULL, NULL);
 
-		SSCtrl_Text2 = CreateWindowW(L"STATIC", L"→  Chế độ:",
+		SSCtrl_Text2 = CreateWindowW(L"STATIC", L"→   Mode:",
 			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 152, 420, 30, hWnd, NULL, NULL, NULL);
 		
 		CBCtrl_2 = CreateWindowW(L"COMBOBOX", L"",
 			WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST, 155, 150, 110, 30, hWnd, NULL, NULL, NULL);
 
-		SSCtrl_Text3 = CreateWindowW(L"STATIC", L"→   Kiểu:",
+		SSCtrl_Text3 = CreateWindowW(L"STATIC", L"→   Unit:",
 			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 187, 420, 30, hWnd, NULL, NULL, NULL);
 
 		CBCtrl_3 = CreateWindowW(L"COMBOBOX", L"",
@@ -171,7 +171,7 @@ namespace cWin32
 			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_CENTER | BS_ICON, 280, 114, 180, 102, hWnd, (HMENU)BUTTON_CONFIRM, NULL, NULL);
 		SendMessageW(ButtonCtrl_SetTimer, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Confirm);
 		
-		SSCtrl_Title2 = CreateWindowW(L"STATIC", L" Cài đặt:",
+		SSCtrl_Title2 = CreateWindowW(L"STATIC", L" Options:",
 			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 230, 420, 30, hWnd, NULL, NULL, NULL);
 
 		SSCtrl_Text4 = CreateWindowW(L"STATIC", L" Fast Mode:",
@@ -214,7 +214,7 @@ namespace cWin32
 			ShowWindow(EditCtrl_1e, SW_HIDE);
 		}
 
-		ButtonCtrl_CancelTimer = CreateWindowW(L"BUTTON", L"Huỷ tất cả lịch tắt máy",
+		ButtonCtrl_CancelTimer = CreateWindowW(L"BUTTON", L"Cancel all schedules",
 			WS_VISIBLE | WS_CHILD | BS_CENTER, 49, 344, 200, 33, hWnd, (HMENU)BUTTON_CANCEL, NULL, NULL);
 
 		SSCtrl_Github = CreateWindowW(L"STATIC", L"",
@@ -252,11 +252,11 @@ namespace cWin32
 				SendMessageW(CBCtrl_2, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
 			}
 			{
-				WCHAR sdlOptions[2][5] =
+				WCHAR sdlOptions[2][7] =
 				{
-					TEXT("Giờ"), TEXT("Phút")
+					TEXT("Hour"), TEXT("Minute")
 				};
-				WCHAR tBuffer[5];
+				WCHAR tBuffer[7];
 				memset(&tBuffer, 0, sizeof(tBuffer));
 				for (int i = 0; i < 2; i++)
 				{
@@ -284,7 +284,7 @@ namespace cWin32
 		if (!eSol->SetPrivilege(hToken, SE_SHUTDOWN_NAME, TRUE))
 		{
 			MessageBoxW(hWnd, L"Error occurred!\n(Lack of permissions)", L"", MB_OK);
-			exit(0);
+			DestroyWindow(G_hWnd);
 		}
 		CloseHandle(hToken);
 
