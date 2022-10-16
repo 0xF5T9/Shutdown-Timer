@@ -149,7 +149,6 @@ namespace cWin32
 		if (!sType) ShowWindow(EditCtrl_1, SW_HIDE);
 		EditCtrl_1e = CreateWindowW(L"EDIT", L"",
 			WS_VISIBLE | WS_CHILD | WS_BORDER | ES_NUMBER, 155, 115, 110, 30, hWnd, NULL, NULL, NULL);
-		///***
 
 		SSCtrl_Text2 = CreateWindowW(L"STATIC", L"→  Chế độ:",
 			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 152, 420, 30, hWnd, NULL, NULL, NULL);
