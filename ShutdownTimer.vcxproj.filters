@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-<<<<<<< Updated upstream
-    <Filter Include="Header Files\Essentials">
-      <UniqueIdentifier>{882813a3-50b0-41c6-9eef-691ca75a4eb0}</UniqueIdentifier>
-    </Filter>
-=======
->>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -35,8 +29,6 @@
     <ClInclude Include="Sources\Headers\global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< Updated upstream
-=======
     <ClInclude Include="Sources\Headers\c_resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -46,7 +38,6 @@
     <ClInclude Include="Sources\Headers\solution.h">
       <Filter>Header Files</Filter>
     </ClInclude>
->>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="Sources\Resources\MyApp.exe.manifest">
@@ -92,13 +83,5 @@
     <Image Include="Sources\Resources\Raws\tick.ico">
       <Filter>Resource Files</Filter>
     </Image>
-<<<<<<< Updated upstream
-  </ItemGroup>
-  <ItemGroup>
-    <Manifest Include="app.manifest">
-      <Filter>Source Files</Filter>
-    </Manifest>
-=======
->>>>>>> Stashed changes
   </ItemGroup>
 </Project>

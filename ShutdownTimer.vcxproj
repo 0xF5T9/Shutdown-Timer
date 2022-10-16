@@ -111,11 +111,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-<<<<<<< Updated upstream
-      <AdditionalDependencies>uxtheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
-=======
       <AdditionalDependencies>Dwmapi.lib;UxTheme.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
->>>>>>> Stashed changes
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -132,11 +128,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-<<<<<<< Updated upstream
-      <AdditionalDependencies>uxtheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
-=======
       <AdditionalDependencies>Dwmapi.lib;UxTheme.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
->>>>>>> Stashed changes
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -149,12 +141,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-<<<<<<< Updated upstream
-      <AdditionalDependencies>uxtheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ManifestFile>$(SolutionDir)$(TargetExt).intermediate.manifest</ManifestFile>
-=======
       <AdditionalDependencies>Dwmapi.lib;UxTheme.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
->>>>>>> Stashed changes
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -171,36 +158,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-<<<<<<< Updated upstream
-      <AdditionalDependencies>uxtheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ManifestFile>$(SolutionDir)$(TargetExt).intermediate.manifest</ManifestFile>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Sources\Headers\framework.h" />
-    <ClInclude Include="Sources\Headers\func.h" />
-    <ClInclude Include="Sources\Headers\resource.h" />
-    <ClInclude Include="Sources\Headers\targetver.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Sources\main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Sources\Resources\ProjectShutdownTimer.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Sources\Resources\default_win32.ico" />
-    <Image Include="Sources\Resources\default_win32_small.ico" />
-    <Image Include="Sources\Resources\SPA.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Manifest Include="app.manifest" />
-  </ItemGroup>
-=======
       <AdditionalDependencies>Dwmapi.lib;UxTheme.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
->>>>>>> Stashed changes
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
