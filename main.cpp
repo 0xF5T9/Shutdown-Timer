@@ -15,7 +15,7 @@ int WINAPI wWinMain(
 	wc.hCursor = LoadCursorW(NULL, IDC_ARROW);
 	wc.hIcon = LoadIconW(hInstance, MAKEINTRESOURCEW(IDI_ICON1));
 	wc.hInstance = hInstance;
-	wc.lpszClassName = L"rsApp001";
+	wc.lpszClassName = L"sdTimerApp1";
 	wc.lpfnWndProc = WindowProcedure;
 
 	hInst = hInstance;
@@ -29,7 +29,7 @@ int WINAPI wWinMain(
 	int cWidth = 0, cHeight = 0;
 	cExtra::GetDesktopResolution(cWidth, cHeight);
 	G_hWnd = CreateWindowW(
-		L"rsApp001", L"",
+		L"sdTimerApp1", L"",
 		C_WS_OVERLAPPEDWINDOW | WS_THICKFRAME | WS_VISIBLE,
 		(cWidth / 2) - 251, (cHeight / 2) - 201,
 		502, 401+2,
