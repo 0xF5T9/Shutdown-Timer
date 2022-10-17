@@ -26,10 +26,13 @@ int WINAPI wWinMain(
 		return -1;
 	}
 
+	cWin32::LoadConfig();
+	cWin32::SetLang(cLang, true);
+
 	int cWidth = 0, cHeight = 0;
 	cExtra::GetDesktopResolution(cWidth, cHeight);
 	G_hWnd = CreateWindowW(
-		L"sdTimerApp1", L"Shutdown Timer",
+		L"sdTimerApp1", AppTitle.c_str(),
 		C_WS_OVERLAPPEDWINDOW | WS_THICKFRAME | WS_VISIBLE,
 		(cWidth / 2) - 251, (cHeight / 2) - 201,
 		502, 401+2,
@@ -133,7 +136,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 							if (time <= 0 || time > 24)
 							{
 								SetWindowTextW(EditCtrl_1e, L"");
-								if (!cFastMode) MessageBoxW(hWnd, L"Enter minimum 1 hour or maximum 24 hours", L"", MB_OK | MB_ICONINFORMATION);
+								if (!cFastMode) MessageBoxW(hWnd, MBLimit_1.c_str(), L"", MB_OK | MB_ICONINFORMATION);
 								break;
 							}
 							SetWindowTextW(EditCtrl_1e, L"");
@@ -153,17 +156,17 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 							int iMB;
 							if (cFastMode)
 								iMB = IDYES;
-							else iMB = MessageBoxW(hWnd, L"The PC already have schedule set\nCancel current schedule?\n(Old schedule will be overwritten)", L"", MB_YESNO | MB_ICONINFORMATION);
+							else iMB = MessageBoxW(hWnd, MBAlreadyScheduled.c_str(), L"", MB_YESNO | MB_ICONINFORMATION);
 							if (iMB == IDYES)
 							{
 								AbortSystemShutdownW(tBuffer_2);
 								InitiateShutdownW(tBuffer_2, NULL, (time * 3600), dMode, SHTDN_REASON_MINOR_OTHER);
-								if (!cFastMode) MessageBoxW(hWnd, (L"The PC will be shutdown after " + std::to_wstring(time) + L" hour(s)").c_str(), L"", MB_OK | MB_ICONINFORMATION);
+								if (!cFastMode) MessageBoxW(hWnd, (MBResult_1 + std::to_wstring(time) + MBResult_2).c_str(), L"", MB_OK | MB_ICONINFORMATION);
 								break;
 							}
 							else break;
 						}
-						if (!cFastMode) MessageBoxW(hWnd, (L"The PC will be shutdown after " + std::to_wstring(time) + L" hour(s)").c_str(), L"", MB_OK | MB_ICONINFORMATION);
+						if (!cFastMode) MessageBoxW(hWnd, (MBResult_1 + std::to_wstring(time) + MBResult_2).c_str(), L"", MB_OK | MB_ICONINFORMATION);
 					}
 					else
 					{
@@ -179,7 +182,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 						if (time <= 0 || time > 1440)
 						{
 							SetWindowTextW(EditCtrl_1, L"");
-							if (!cFastMode) MessageBoxW(hWnd, L"Enter minimum 1 minute or maximum 1440 minutes", L"", MB_OK | MB_ICONINFORMATION);
+							if (!cFastMode) MessageBoxW(hWnd, MBLimit_2.c_str(), L"", MB_OK | MB_ICONINFORMATION);
 							break;
 						}
 						SetWindowTextW(EditCtrl_1, L"");
@@ -197,17 +200,17 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 							int iMB;
 							if (cFastMode)
 								iMB = IDYES;
-							else iMB = MessageBoxW(hWnd, L"The PC already have schedule set\nCancel current schedule?\n(Old schedule will be overwritten)", L"", MB_YESNO | MB_ICONINFORMATION);
+							else iMB = MessageBoxW(hWnd, MBAlreadyScheduled.c_str(), L"", MB_YESNO | MB_ICONINFORMATION);
 							if (iMB == IDYES)
 							{
 								AbortSystemShutdownW(tBuffer_2);
 								InitiateShutdownW(tBuffer_2, NULL, (time * 60), dMode, SHTDN_REASON_MINOR_OTHER);
-								if (!cFastMode) MessageBoxW(hWnd, (L"The PC will be shutdown after " + std::to_wstring(time) + L" minute(s)").c_str(), L"", MB_OK | MB_ICONINFORMATION);
+								if (!cFastMode) MessageBoxW(hWnd, (MBResult_1 + std::to_wstring(time) + MBResult_2a).c_str(), L"", MB_OK | MB_ICONINFORMATION);
 								break;
 							}
 							else break;
 						}
-						if (!cFastMode) MessageBoxW(hWnd, (L"The PC will be shutdown after " + std::to_wstring(time) + L" minute(s)").c_str(), L"", MB_OK | MB_ICONINFORMATION);
+						if (!cFastMode) MessageBoxW(hWnd, (MBResult_1 + std::to_wstring(time) + MBResult_2a).c_str(), L"", MB_OK | MB_ICONINFORMATION);
 					}
 
 					break;
@@ -226,8 +229,32 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 					break;
 				}
 
+				case BUTTON_CHANGELANGUAGE:
+				{
+					if (cLang == L"EN")
+					{
+						cWin32::UpdateConfig(L"LANGUAGE", L"vi");
+						cWin32::SetLang(L"VI");
+						SetWindowTextW(ButtonCtrl_ChangeLanguage, L"VI");
+						cWin32::RefreshApp();
+						cLang = L"VI";
+					}
+					else if (cLang == L"VI")
+					{
+						cWin32::UpdateConfig(L"LANGUAGE", L"en");
+						cWin32::SetLang(L"EN");
+						SetWindowTextW(ButtonCtrl_ChangeLanguage, L"EN");
+						cWin32::RefreshApp();
+						cLang = L"EN";
+					}
+					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
+
+					break;
+				}
+
 				case BUTTON_FMODEON:
 				{
+					cWin32::UpdateConfig(L"FASTMODE", L"1");
 					cFastMode = 1;
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 					break;
@@ -235,6 +262,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 				case BUTTON_FMODEOFF:
 				{
+					cWin32::UpdateConfig(L"FASTMODE", L"0");
 					cFastMode = 0;
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 					break;
@@ -242,6 +270,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 				case BUTTON_EMODEON:
 				{
+					cWin32::UpdateConfig(L"EXTRAMODE", L"1");
 					ShowWindow(EditCtrl_1, SW_HIDE);
 					ShowWindow(CBCtrl_1, SW_HIDE);
 					ShowWindow(EditCtrl_1e, SW_SHOW);
@@ -257,6 +286,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 				case BUTTON_EMODEOFF:
 				{
+					cWin32::UpdateConfig(L"EXTRAMODE", L"0");
 					ShowWindow(EditCtrl_1e, SW_HIDE);
 					ShowWindow(CBCtrl_1, SW_SHOW);
 					SendMessageW(CBCtrl_3, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
