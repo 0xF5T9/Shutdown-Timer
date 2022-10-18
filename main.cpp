@@ -523,7 +523,8 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 LRESULT CALLBACK SSButtonHover(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
-	static bool isSet = 0;
+	static bool isHovering = 0;
+
 	switch (uMsg)
 	{
 		case WM_NCDESTROY:
@@ -532,62 +533,69 @@ LRESULT CALLBACK SSButtonHover(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			break;
 		}
 
-		case WM_MOUSEMOVE:
+		case WM_MOUSEHOVER:
 		{
-			if (hWnd == SSCtrl_Close)
+			return 0;
+		}
+
+		case WM_MOUSELEAVE:
+		{
+			if (isHovering)
 			{
-				if (LOWORD(lParam) >= 15 && LOWORD(lParam) <= 35 && HIWORD(lParam) >= 15 && HIWORD(lParam) <= 35)
-				{
-					if (!isSet)
-					{
-						SendMessageW(SSCtrl_Close, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Close_H);
-						isSet = 1;
-					}	
-				}
-				else
+				if (hWnd == SSCtrl_Close)
 				{
 					SendMessageW(SSCtrl_Close, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Close);
-					isSet = 0;
+				}
+				else if (hWnd == SSCtrl_Minimize)
+				{
+					SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize);
+				}
+				else if (hWnd == SSCtrl_Github)
+				{
+					SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github);
+				}
+			}
+			
+			isHovering = 0;
+			return 0;
+		}
+
+		case WM_MOUSEMOVE:
+		{
+			TRACKMOUSEEVENT tme;
+			tme.cbSize = sizeof(TRACKMOUSEEVENT);
+			tme.dwFlags = TME_LEAVE;
+			tme.hwndTrack = hWnd;
+
+			if (hWnd == SSCtrl_Close)
+			{
+				TrackMouseEvent(&tme);
+				if (!isHovering)
+				{
+					SendMessageW(SSCtrl_Close, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Close_H);
+					isHovering = 1;
 				}
 			}
 			else if (hWnd == SSCtrl_Minimize)
 			{
-				if (LOWORD(lParam) >= 15 && LOWORD(lParam) <= 35 && HIWORD(lParam) >= 15 && HIWORD(lParam) <= 35)
+				TrackMouseEvent(&tme);
+				if (!isHovering)
 				{
-					if (!isSet)
-					{
-						SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize_H);
-						isSet = 1;
-					}
-				}
-				else
-				{
-					SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize);
-					isSet = 0;
+					SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize_H);
+					isHovering = 1;
 				}
 			}
 			else if (hWnd == SSCtrl_Github)
 			{
-				if (LOWORD(lParam) >= 20 && LOWORD(lParam) <= 84 && HIWORD(lParam) >= 11 && HIWORD(lParam) <= 33)
+				TrackMouseEvent(&tme);
+				if (!isHovering)
 				{
-					if (!isSet)
-					{
-						SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github_H);
-						isSet = 1;
-					}
-				}
-				else
-				{
-					if (isSet)
-					{
-						SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github);
-						isSet = 0;
-					}
-						
+					SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github_H);
+					isHovering = 1;
 				}
 			}
-				
-			break;
+
+			return 0;
 		}
 	}
 
