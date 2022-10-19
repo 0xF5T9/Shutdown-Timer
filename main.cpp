@@ -29,13 +29,12 @@ int WINAPI wWinMain(
 	cWin32::LoadConfig();
 	cWin32::SetLang(cLang, true);
 
-	int cWidth = 0, cHeight = 0;
-	cExtra::GetDesktopResolution(cWidth, cHeight);
+	cExtra::GetDesktopResolution(SCREEN_WIDTH, SCREEN_HEIGHT);
 	G_hWnd = CreateWindowW(
 		L"sdTimerApp1", AppTitle.c_str(),
 		C_WS_OVERLAPPEDWINDOW | WS_THICKFRAME | WS_VISIBLE,
-		(cWidth / 2) - 251, (cHeight / 2) - 201,
-		502, 401+2,
+		(SCREEN_WIDTH / 2) - (APPLICATION_WIDTH/2), (SCREEN_HEIGHT / 2) - (APPLICATION_HEIGHT/2),
+		APPLICATION_WIDTH, APPLICATION_HEIGHT,
 		NULL, NULL, hInstance, NULL);
 
 	MSG msg = { 0 };
@@ -480,6 +479,12 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 			return (TRUE);
 		}
 		*/
+		case WM_WINDOWPOSCHANGED:
+		{
+			WINDOWPOS* wndpos = (WINDOWPOS*)lp;
+			if (wndpos->cx > APPLICATION_WIDTH || wndpos->cy > APPLICATION_HEIGHT)
+				SetWindowPos(hWnd, NULL, (SCREEN_WIDTH / 2) - (APPLICATION_WIDTH / 2), (SCREEN_HEIGHT / 2) - (APPLICATION_HEIGHT / 2), APPLICATION_WIDTH, APPLICATION_HEIGHT, SWP_NOZORDER);
+		}
 
 		case WM_KEYDOWN:
 		{

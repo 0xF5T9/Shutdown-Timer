@@ -3,6 +3,8 @@
 /// GLOBAL SCOPE (EXTERNAL)
 
 // PROGRAM PARAMETERS
+extern int APPLICATION_WIDTH, APPLICATION_HEIGHT;
+extern int SCREEN_WIDTH, SCREEN_HEIGHT;
 extern bool sMode;
 extern bool sType;
 extern bool cFastMode;

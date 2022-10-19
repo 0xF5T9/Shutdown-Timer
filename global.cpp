@@ -6,6 +6,8 @@
 /// GLOBAL SCOPE
 
 // PROGRAM PARAMETERS
+int APPLICATION_WIDTH = 502, APPLICATION_HEIGHT = 403;
+int SCREEN_WIDTH = 0, SCREEN_HEIGHT = 0;
 bool sMode = 0;
 bool sType = 0;
 bool cFastMode = 0;
@@ -32,7 +34,7 @@ HICON hIcon_Close, hIcon_Close_H, hIcon_Minimize, hIcon_Minimize_H, hIcon_Confir
 HICON hIcon_Github, hIcon_Github_H;
 
 // RECTS:
-RECT rTitle = { 0, 0, 500, 50 };
+RECT rTitle = { 0, 0, 500, 37 };
 
 // BRUSHES & FONTS:
 HBRUSH hBrush_STATIC1, hBrush_STATIC2;
