@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\c_subclasses">
+      <UniqueIdentifier>{886a555b-7932-4b96-a791-b7670bb6ab96}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -20,6 +23,9 @@
     </ClCompile>
     <ClCompile Include="global.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Subclasses\c_subclass.cpp">
+      <Filter>Source Files\c_subclasses</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

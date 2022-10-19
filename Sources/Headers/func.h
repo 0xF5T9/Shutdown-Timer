@@ -15,12 +15,14 @@
 #include "solution.h"
 #include "global.h"
 
-/// PROGRAM PROCEDURES'S FORWARD DECLARATION
+/// FORWARD DECLARATIONS:
 LRESULT CALLBACK WindowProcedure(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK SSButtonHover(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 
+/// FUNCTIONS:
 namespace cExtra 
 {
+	// Get desktop resolution
 	void GetDesktopResolution(int& horizontal, int& vertical)
 	{
 		RECT desktop;
@@ -31,6 +33,7 @@ namespace cExtra
 		vertical = desktop.bottom;
 	}
 
+	// Show window sizes via message boxes (Debug)
 	bool cShowSizeInfo(HWND hWnd)
 	{
 		RECT tRect;
@@ -53,12 +56,14 @@ namespace cExtra
 		return true;
 	}
 
+	// Set HWND's font (CALLBACK function for EnumChildWindows)
 	bool CALLBACK SetFont(HWND child_hwnd, LPARAM hFont)
 	{
 		SendMessageW(child_hwnd, WM_SETFONT, hFont, TRUE);
 		return true;
 	}
 
+	// Create HFONTs
 	HFONT CreateHFONT(std::wstring fName, int fSize)
 	{
 		HFONT ret_hFONT = CreateFontW(fSize, 0, 0, 0x1,
@@ -69,6 +74,7 @@ namespace cExtra
 		return ret_hFONT;
 	}
 
+	// Execute command (Debug)
 	void ExecCmd(std::string sCmdLine)
 	{
 		STARTUPINFOA si;
@@ -92,16 +98,31 @@ namespace cExtra
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
 	}
+
+	// Get machine name
+	std::wstring GetMachineName()
+	{
+		WCHAR tBuffer[MAX_COMPUTERNAME_LENGTH + 1];
+		memset(tBuffer, 0, sizeof(tBuffer));
+		DWORD machineNameSize = MAX_COMPUTERNAME_LENGTH + 1;
+		GetComputerNameW(tBuffer, &machineNameSize);
+
+		std::wstring lwstr = tBuffer;
+		return lwstr;
+	}
 }
 
 namespace cWin32
 {
-	bool InitExtra(HWND hWnd, RECT& rc)
+	bool InitExtraBegin(bool skip = 0)
 	{
-		// eSol->FindBorderThickness(hWnd, rc);
+		if (skip)
+			return false;
+
 		return true;
 	}
 
+	// Initialize media handles
 	bool InitMedia(bool skip = 0)
 	{
 		if (skip)
@@ -117,17 +138,18 @@ namespace cWin32
 		hIcon_Github_H = (HICON)LoadImageW(NULL, L"github_h.ico", IMAGE_ICON, 80, 33, LR_LOADFROMFILE);
 		*/
 
-		hIcon_Close = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON2), IMAGE_ICON, 45, 45, NULL);
-		hIcon_Close_H = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON3), IMAGE_ICON, 37, 37, NULL);
-		hIcon_Minimize = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON4), IMAGE_ICON, 45, 45, NULL);
-		hIcon_Minimize_H = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON5), IMAGE_ICON, 37, 37, NULL);
-		hIcon_Confirm = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON6), IMAGE_ICON, 100, 100, NULL);
-		hIcon_Github = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON7), IMAGE_ICON, 80, 33, NULL);
-		hIcon_Github_H = (HICON)LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON8), IMAGE_ICON, 80, 33, NULL);
+		hIcon_Close = (HICON)LoadImageW(MAIN_HINSTANCE, MAKEINTRESOURCEW(IDI_ICON2), IMAGE_ICON, 45, 45, NULL);
+		hIcon_Close_H = (HICON)LoadImageW(MAIN_HINSTANCE, MAKEINTRESOURCEW(IDI_ICON3), IMAGE_ICON, 37, 37, NULL);
+		hIcon_Minimize = (HICON)LoadImageW(MAIN_HINSTANCE, MAKEINTRESOURCEW(IDI_ICON4), IMAGE_ICON, 45, 45, NULL);
+		hIcon_Minimize_H = (HICON)LoadImageW(MAIN_HINSTANCE, MAKEINTRESOURCEW(IDI_ICON5), IMAGE_ICON, 37, 37, NULL);
+		hIcon_Confirm = (HICON)LoadImageW(MAIN_HINSTANCE, MAKEINTRESOURCEW(IDI_ICON6), IMAGE_ICON, 100, 100, NULL);
+		hIcon_Github = (HICON)LoadImageW(MAIN_HINSTANCE, MAKEINTRESOURCEW(IDI_ICON7), IMAGE_ICON, 80, 33, NULL);
+		hIcon_Github_H = (HICON)LoadImageW(MAIN_HINSTANCE, MAKEINTRESOURCEW(IDI_ICON8), IMAGE_ICON, 80, 33, NULL);
 
 		return true;
 	}
-
+	
+	// Initialize control handles
 	bool InitControl(HWND hWnd, bool skip = 0)
 	{
 		if (skip)
@@ -143,72 +165,72 @@ namespace cWin32
 		SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize);
 		SetWindowSubclass(SSCtrl_Minimize, &SSButtonHover, 1, NULL);
 
-		SSCtrl_Title1 = CreateWindowW(L"STATIC", MITitle_1.c_str(),
-			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 70-6, 420, 30, hWnd, NULL, NULL, NULL);
+		SSCtrl_Title1 = CreateWindowW(L"STATIC", STR_MI_Title1.c_str(),
+			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 64, 420, 30, hWnd, NULL, NULL, NULL);
 
-		SSCtrl_Text1 = CreateWindowW(L"STATIC", MI_1.c_str(),
-			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 117-6, 420, 30, hWnd, NULL, NULL, NULL);
+		SSCtrl_Text1 = CreateWindowW(L"STATIC", STR_MI_1.c_str(),
+			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 111, 420, 30, hWnd, NULL, NULL, NULL);
 
 		CBCtrl_1 = CreateWindowW(L"COMBOBOX", L"",
-			WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST, 155, 115 - 6, 110, 30, hWnd, NULL, NULL, NULL);
+			WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST, 155, 109, 110, 30, hWnd, NULL, NULL, NULL);
 
 		EditCtrl_1 = CreateWindowW(L"EDIT", L"",
-			WS_VISIBLE | WS_CHILD | WS_BORDER | ES_NUMBER, 155, 115 - 6, 110, 30, hWnd, NULL, NULL, NULL);
-		if (!sType) ShowWindow(EditCtrl_1, SW_HIDE);
+			WS_VISIBLE | WS_CHILD | WS_BORDER | ES_NUMBER, 155, 109, 110, 30, hWnd, NULL, NULL, NULL);
+		if (!AP_UNIT) ShowWindow(EditCtrl_1, SW_HIDE);
 		EditCtrl_1e = CreateWindowW(L"EDIT", L"",
-			WS_VISIBLE | WS_CHILD | WS_BORDER | ES_NUMBER, 155, 115 - 6, 110, 30, hWnd, NULL, NULL, NULL);
+			WS_VISIBLE | WS_CHILD | WS_BORDER | ES_NUMBER, 155, 109, 110, 30, hWnd, NULL, NULL, NULL);
 
-		SSCtrl_Text2 = CreateWindowW(L"STATIC", MI_2.c_str(),
-			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 152 - 6, 420, 30, hWnd, NULL, NULL, NULL);
+		SSCtrl_Text2 = CreateWindowW(L"STATIC", STR_MI_2.c_str(),
+			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 146, 420, 30, hWnd, NULL, NULL, NULL);
 		
 		CBCtrl_2 = CreateWindowW(L"COMBOBOX", L"",
-			WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST, 155, 150 - 6, 110, 30, hWnd, NULL, NULL, NULL);
+			WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST, 155, 144, 110, 30, hWnd, NULL, NULL, NULL);
 
-		SSCtrl_Text3 = CreateWindowW(L"STATIC", MI_3.c_str(),
-			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 187 - 6, 420, 30, hWnd, NULL, NULL, NULL);
+		SSCtrl_Text3 = CreateWindowW(L"STATIC", STR_MI_3.c_str(),
+			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 181, 420, 30, hWnd, NULL, NULL, NULL);
 
 		CBCtrl_3 = CreateWindowW(L"COMBOBOX", L"",
-			WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST, 155, 185 - 6, 110, 30, hWnd, NULL, NULL, NULL);
+			WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST, 155, 179, 110, 30, hWnd, NULL, NULL, NULL);
 
 		ButtonCtrl_SetTimer = CreateWindowW(L"BUTTON", L"",
-			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_CENTER | BS_ICON, 280, 114 - 6, 180, 102, hWnd, (HMENU)BUTTON_CONFIRM, NULL, NULL);
+			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_CENTER | BS_ICON, 280, 108, 180, 102, hWnd, (HMENU)BUTTON_CONFIRM, NULL, NULL);
 		SendMessageW(ButtonCtrl_SetTimer, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Confirm);
 		
-		SSCtrl_Title2 = CreateWindowW(L"STATIC", MITitle_2.c_str(),
-			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 230 - 6, 420, 30, hWnd, NULL, NULL, NULL);
+		SSCtrl_Title2 = CreateWindowW(L"STATIC", STR_MI_Title2.c_str(),
+			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 224, 420, 30, hWnd, NULL, NULL, NULL);
 
-		SSCtrl_Text4 = CreateWindowW(L"STATIC", MI_4.c_str(),
-		    WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 277 - 6, 420, 30, hWnd, NULL, NULL, NULL);
+		SSCtrl_Text4 = CreateWindowW(L"STATIC", STR_MI_4.c_str(),
+		    WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 271, 420, 30, hWnd, NULL, NULL, NULL);
 
 		ButtonCtrl_FMOFF = CreateWindowW(L"BUTTON", L"OFF",
 			WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON | WS_GROUP, 
-			147, 274 - 6, 55, 30, hWnd, (HMENU)BUTTON_FMODEOFF, NULL, NULL);
+			147, 268, 55, 30, hWnd, (HMENU)BUTTON_FMODEOFF, NULL, NULL);
 
 		ButtonCtrl_FMON = CreateWindowW(L"BUTTON", L"ON",
 			WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON,
-			207, 274 - 6, 55, 30, hWnd, (HMENU)BUTTON_FMODEON, NULL, NULL);
+			207, 268, 55, 30, hWnd, (HMENU)BUTTON_FMODEON, NULL, NULL);
 
-		if (cFastMode)
+		if (AP_FASTMODE)
 			SendMessageW(ButtonCtrl_FMON, BM_SETCHECK, BST_CHECKED, NULL);
 		else SendMessageW(ButtonCtrl_FMOFF, BM_SETCHECK, BST_CHECKED, NULL);
 
-		SSCtrl_Text5 = CreateWindowW(L"STATIC", MI_5.c_str(),
-			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 312 - 6, 420, 30, hWnd, NULL, NULL, NULL);
+		SSCtrl_Text5 = CreateWindowW(L"STATIC", STR_MI_5.c_str(),
+			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 306, 420, 30, hWnd, NULL, NULL, NULL);
 
 		ButtonCtrl_EMOFF = CreateWindowW(L"BUTTON", L"OFF",
 			WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON | WS_GROUP,
-			147, 309 - 6, 55, 30, hWnd, (HMENU)BUTTON_EMODEOFF, NULL, NULL);
+			147, 303, 55, 30, hWnd, (HMENU)BUTTON_EMODEOFF, NULL, NULL);
 
 		ButtonCtrl_EMON = CreateWindowW(L"BUTTON", L"ON",
 			WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON,
-			207, 309 - 6, 55, 30, hWnd, (HMENU)BUTTON_EMODEON, NULL, NULL);
+			207, 303, 55, 30, hWnd, (HMENU)BUTTON_EMODEON, NULL, NULL);
 
-		if (cExtraMode)
+		if (AP_EXTRAMODE)
 		{
 			SendMessageW(ButtonCtrl_EMON, BM_SETCHECK, BST_CHECKED, NULL);
 			ShowWindow(EditCtrl_1, SW_HIDE);
 			ShowWindow(CBCtrl_1, SW_HIDE);
-			sType = 0;
+			AP_UNIT = 0;
 			EnableWindow(CBCtrl_3, 0);
 		}
 		else
@@ -217,14 +239,14 @@ namespace cWin32
 			ShowWindow(EditCtrl_1e, SW_HIDE);
 		}
 
-		ButtonCtrl_CancelTimer = CreateWindowW(L"BUTTON", MI_6.c_str(),
-			WS_VISIBLE | WS_CHILD | BS_CENTER, 40+6+50-5-1, 344 - 6, 165-3+1, 33, hWnd, (HMENU)BUTTON_CANCEL, NULL, NULL);
+		ButtonCtrl_CancelTimer = CreateWindowW(L"BUTTON", STR_MI_6.c_str(),
+			WS_VISIBLE | WS_CHILD | BS_CENTER, 90, 338, 163, 33, hWnd, (HMENU)BUTTON_CANCEL, NULL, NULL);
 
-		ButtonCtrl_ChangeLanguage = CreateWindowW(L"BUTTON", MI_7.c_str(),
-			WS_VISIBLE | WS_CHILD | BS_CENTER, 40+6, 344 - 6, 50-5, 33, hWnd, (HMENU)BUTTON_CHANGELANGUAGE, NULL, NULL);
+		ButtonCtrl_ChangeLanguage = CreateWindowW(L"BUTTON", STR_MI_7.c_str(),
+			WS_VISIBLE | WS_CHILD | BS_CENTER, 40+6, 338, 45, 33, hWnd, (HMENU)BUTTON_CHANGELANGUAGE, NULL, NULL);
 
 		SSCtrl_Github = CreateWindowW(L"STATIC", L"",
-			WS_VISIBLE | WS_CHILD | SS_NOTIFY | SS_ICON | SS_CENTERIMAGE, 500-80-40, 344 - 6, 80, 33+5, hWnd, (HMENU)BUTTON_GITHUB, NULL, NULL);
+			WS_VISIBLE | WS_CHILD | SS_NOTIFY | SS_ICON | SS_CENTERIMAGE, 380, 338, 80, 38, hWnd, (HMENU)BUTTON_GITHUB, NULL, NULL);
 		SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github);
 		SetWindowSubclass(SSCtrl_Github, &SSButtonHover, 1, NULL);
 
@@ -257,7 +279,7 @@ namespace cWin32
 				}
 				SendMessageW(CBCtrl_2, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
 			}
-			if (cLang == L"EN")
+			if (APP_LANGUAGE == L"EN")
 			{
 				WCHAR sdlOptions[2][7] =
 				{
@@ -272,7 +294,7 @@ namespace cWin32
 				}
 				SendMessageW(CBCtrl_3, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
 			}
-			else if (cLang == L"VI")
+			else if (APP_LANGUAGE == L"VI")
 			{
 				WCHAR sdlOptions[2][7] =
 				{
@@ -292,33 +314,36 @@ namespace cWin32
 		return true;
 	}
 
-	bool EndCreate(HWND hWnd, bool skip = 0)
+	bool InitExtraEnd(HWND hWnd, bool skip = 0)
 	{
 		if (skip)
 			return false;
 
-		EnumChildWindows(hWnd, (WNDENUMPROC)cExtra::SetFont, (LPARAM)cExtra::CreateHFONT(L"Tahoma", 22));
-		cExtra::SetFont(SSCtrl_Title1, (LPARAM)cExtra::CreateHFONT(L"Tahoma", 25));
+		// Set control fonts
+		EnumChildWindows(hWnd, (WNDENUMPROC)cExtra::SetFont, (LPARAM)cExtra::CreateHFONT(L"Tahoma", 22));	// Default font
+		cExtra::SetFont(SSCtrl_Title1, (LPARAM)cExtra::CreateHFONT(L"Tahoma", 25));				
 		cExtra::SetFont(SSCtrl_Title2, (LPARAM)cExtra::CreateHFONT(L"Tahoma", 25));
 
+		// Grant privilege "SE_SHUTDOWN_NAME" for the application
 		HANDLE hToken;
 		OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken);
 		if (!eSol->SetPrivilege(hToken, SE_SHUTDOWN_NAME, TRUE))
 		{
 			MessageBoxW(hWnd, L"Error occurred!\n(Lack of permissions)", L"", MB_OK);
-			DestroyWindow(G_hWnd);
+			DestroyWindow(MAIN_HWND);
 		}
 		CloseHandle(hToken);
 
 		return true;
 	}
 
-	void SetLang(std::wstring language, bool isInit = 0)
+	// Set application language
+	void SetLanguage(std::wstring language, bool isInit = 0)
 	{
 		if (language != L"EN" && language != L"VI")
 		{
-			if (G_hWnd)
-				DestroyWindow(G_hWnd);
+			if (MAIN_HWND)
+				DestroyWindow(MAIN_HWND);
 			exit(1);
 		}
 
@@ -326,71 +351,71 @@ namespace cWin32
 		{
 			if (language == L"EN")
 			{
-				AppTitle = L"Shutdown Timer";
-				MBLimit_1 = L"Enter minimum 1 hour or maximum 24 hours";
-				MBLimit_2 = L"Enter minimum 1 minute or maximum 1440 minutes";
-				MBAlreadyScheduled = L"The PC already have schedule set\nCancel current schedule?\n(Old schedule will be overwritten)";
-				MBResult_1 = L"The PC will be shutdown after ";
-				MBResult_2 = L" hour(s)";
-				MBResult_2a = L" minute(s)";
-				MITitle_1 = L" Timers:";
-				MITitle_2 = L" Options:";
-				MI_1 = L"→   Time:";
-				MI_2 = L"→   Mode:";
-				MI_3 = L"→   Unit:";
-				MI_4 = L" Fast Mode:";
-				MI_5 = L" Extra Mode:";
-				MI_6 = L"Abort Schedules";
-				MI_7 = L"EN";
+				STR_AppTitle = L"Shutdown Timer";
+				STR_MB_Limit1 = L"Enter minimum 1 hour or maximum 24 hours";
+				STR_MB_Limit2 = L"Enter minimum 1 minute or maximum 1440 minutes";
+				STR_MB_AlreadyScheduled = L"The PC already have schedule set\nCancel current schedule?\n(Old schedule will be overwritten)";
+				STR_MB_Result1 = L"The PC will be shutdown after ";
+				STR_MB_Result2 = L" hour(s)";
+				STR_MB_Result2A = L" minute(s)";
+				STR_MI_Title1 = L" Timers:";
+				STR_MI_Title2 = L" Options:";
+				STR_MI_1 = L"→   Time:";
+				STR_MI_2 = L"→   Mode:";
+				STR_MI_3 = L"→   Unit:";
+				STR_MI_4 = L" Fast Mode:";
+				STR_MI_5 = L" Extra Mode:";
+				STR_MI_6 = L"Abort Schedules";
+				STR_MI_7 = L"EN";
 			}
 			else if (language == L"VI")
 			{
-				AppTitle = L"Bộ hẹn giờ";
-				MBLimit_1 = L"Nhập tối thiểu 1 tiếng hoặc tối đa 24 tiếng";
-				MBLimit_2 = L"Nhập tối thiểu 1 phút hoặc tối đa 1440 phút";
-				MBAlreadyScheduled = L"Máy tính đã có lịch tắt máy\nHuỷ lịch tắt máy hiện tại?\n(Sẽ ghi đè bằng lịch hẹn mới)";
-				MBResult_1 = L"Máy tính sẽ được tắt sau ";
-				MBResult_2 = L" tiếng";
-				MBResult_2a = L" phút";
-				MITitle_1 = L" Bộ hẹn giờ:";
-				MITitle_2 = L" Cài đặt:";
-				MI_1 = L"→ Thời gian:";
-				MI_2 = L"→  Chế độ:";
-				MI_3 = L"→   Kiểu:";
-				MI_4 = L" Fast Mode:";
-				MI_5 = L" Extra Mode:";
-				MI_6 = L"Huỷ lệnh hiện tại";
-				MI_7 = L"VI";
+				STR_AppTitle = L"Bộ hẹn giờ";
+				STR_MB_Limit1 = L"Nhập tối thiểu 1 tiếng hoặc tối đa 24 tiếng";
+				STR_MB_Limit2 = L"Nhập tối thiểu 1 phút hoặc tối đa 1440 phút";
+				STR_MB_AlreadyScheduled = L"Máy tính đã có lịch tắt máy\nHuỷ lịch tắt máy hiện tại?\n(Sẽ ghi đè bằng lịch hẹn mới)";
+				STR_MB_Result1 = L"Máy tính sẽ được tắt sau ";
+				STR_MB_Result2 = L" tiếng";
+				STR_MB_Result2A = L" phút";
+				STR_MI_Title1 = L" Bộ hẹn giờ:";
+				STR_MI_Title2 = L" Cài đặt:";
+				STR_MI_1 = L"→ Thời gian:";
+				STR_MI_2 = L"→  Chế độ:";
+				STR_MI_3 = L"→   Kiểu:";
+				STR_MI_4 = L" Fast Mode:";
+				STR_MI_5 = L" Extra Mode:";
+				STR_MI_6 = L"Huỷ lệnh hiện tại";
+				STR_MI_7 = L"VI";
 			}
 		}
 		else
 		{
 			if (language == L"EN")
 			{
-				AppTitle = L"Shutdown Timer";
-				MBLimit_1 = L"Enter minimum 1 hour or maximum 24 hours";
-				MBLimit_2 = L"Enter minimum 1 minute or maximum 1440 minutes";
-				MBAlreadyScheduled = L"The PC already have schedule set\nCancel current schedule?\n(Old schedule will be overwritten)";
-				MBResult_1 = L"The PC will be shutdown after ";
-				MBResult_2 = L" hour(s)";
-				MBResult_2a = L" minute(s)";
-				MITitle_1 = L" Timers:";
-				MITitle_2 = L" Options:";
-				MI_1 = L"→   Time:";
-				MI_2 = L"→   Mode:";
-				MI_3 = L"→   Unit:";
-				MI_4 = L" Fast Mode:";
-				MI_5 = L" Extra Mode:";
-				MI_6 = L"Abort Schedules";
-				SetWindowTextW(G_hWnd, AppTitle.c_str());
-				SetWindowTextW(SSCtrl_Title1, MITitle_1.c_str());
-				SetWindowTextW(SSCtrl_Title2, MITitle_2.c_str());
-				SetWindowTextW(SSCtrl_Text1, MI_1.c_str());
-				SetWindowTextW(SSCtrl_Text2, MI_2.c_str());
-				SetWindowTextW(SSCtrl_Text3, MI_3.c_str());
-				SetWindowTextW(SSCtrl_Text4, MI_4.c_str());
-				SetWindowTextW(SSCtrl_Text5, MI_5.c_str());
-				SetWindowTextW(ButtonCtrl_CancelTimer, MI_6.c_str());
+				STR_AppTitle = L"Shutdown Timer";
+				STR_MB_Limit1 = L"Enter minimum 1 hour or maximum 24 hours";
+				STR_MB_Limit2 = L"Enter minimum 1 minute or maximum 1440 minutes";
+				STR_MB_AlreadyScheduled = L"The PC already have schedule set\nCancel current schedule?\n(Old schedule will be overwritten)";
+				STR_MB_Result1 = L"The PC will be shutdown after ";
+				STR_MB_Result2 = L" hour(s)";
+				STR_MB_Result2A = L" minute(s)";
+				STR_MI_Title1 = L" Timers:";
+				STR_MI_Title2 = L" Options:";
+				STR_MI_1 = L"→   Time:";
+				STR_MI_2 = L"→   Mode:";
+				STR_MI_3 = L"→   Unit:";
+				STR_MI_4 = L" Fast Mode:";
+				STR_MI_5 = L" Extra Mode:";
+				STR_MI_6 = L"Abort Schedules";
+				SetWindowTextW(MAIN_HWND, STR_AppTitle.c_str());
+				SetWindowTextW(SSCtrl_Title1, STR_MI_Title1.c_str());
+				SetWindowTextW(SSCtrl_Title2, STR_MI_Title2.c_str());
+				SetWindowTextW(SSCtrl_Text1, STR_MI_1.c_str());
+				SetWindowTextW(SSCtrl_Text2, STR_MI_2.c_str());
+				SetWindowTextW(SSCtrl_Text3, STR_MI_3.c_str());
+				SetWindowTextW(SSCtrl_Text4, STR_MI_4.c_str());
+				SetWindowTextW(SSCtrl_Text5, STR_MI_5.c_str());
+				SetWindowTextW(ButtonCtrl_CancelTimer, STR_MI_6.c_str());
 				SendMessageW(CBCtrl_3, CB_DELETESTRING, 0, NULL);
 				SendMessageW(CBCtrl_3, CB_DELETESTRING, 0, NULL);
 				WCHAR sdlOptions[2][7] =
@@ -404,35 +429,35 @@ namespace cWin32
 					wcscpy_s(tBuffer, sizeof(tBuffer) / sizeof(WCHAR), (WCHAR*)sdlOptions[i]);
 					SendMessageW(CBCtrl_3, CB_ADDSTRING, 0, (LPARAM)tBuffer);
 				}
-				if (!sType) SendMessageW(CBCtrl_3, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
+				if (!AP_UNIT) SendMessageW(CBCtrl_3, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
 				else SendMessageW(CBCtrl_3, CB_SETCURSEL, (WPARAM)1, (LPARAM)0);
 			}
 			else if (language == L"VI")
 			{
-				AppTitle = L"Bộ hẹn giờ";
-				MBLimit_1 = L"Nhập tối thiểu 1 tiếng hoặc tối đa 24 tiếng";
-				MBLimit_2 = L"Nhập tối thiểu 1 phút hoặc tối đa 1440 phút";
-				MBAlreadyScheduled = L"Máy tính đã có lịch tắt máy\nHuỷ lịch tắt máy hiện tại?\n(Sẽ ghi đè bằng lịch hẹn mới)";
-				MBResult_1 = L"Máy tính sẽ được tắt sau ";
-				MBResult_2 = L" tiếng";
-				MBResult_2a = L" phút";
-				MITitle_1 = L" Bộ hẹn giờ:";
-				MITitle_2 = L" Cài đặt:";
-				MI_1 = L"→ Thời gian:";
-				MI_2 = L"→  Chế độ:";
-				MI_3 = L"→   Kiểu:";
-				MI_4 = L" Fast Mode:";
-				MI_5 = L" Extra Mode:";
-				MI_6 = L"Huỷ lệnh hiện tại";
-				SetWindowTextW(G_hWnd, AppTitle.c_str());
-				SetWindowTextW(SSCtrl_Title1, MITitle_1.c_str());
-				SetWindowTextW(SSCtrl_Title2, MITitle_2.c_str());
-				SetWindowTextW(SSCtrl_Text1, MI_1.c_str());
-				SetWindowTextW(SSCtrl_Text2, MI_2.c_str());
-				SetWindowTextW(SSCtrl_Text3, MI_3.c_str());
-				SetWindowTextW(SSCtrl_Text4, MI_4.c_str());
-				SetWindowTextW(SSCtrl_Text5, MI_5.c_str());
-				SetWindowTextW(ButtonCtrl_CancelTimer, MI_6.c_str());
+				STR_AppTitle = L"Bộ hẹn giờ";
+				STR_MB_Limit1 = L"Nhập tối thiểu 1 tiếng hoặc tối đa 24 tiếng";
+				STR_MB_Limit2 = L"Nhập tối thiểu 1 phút hoặc tối đa 1440 phút";
+				STR_MB_AlreadyScheduled = L"Máy tính đã có lịch tắt máy\nHuỷ lịch tắt máy hiện tại?\n(Sẽ ghi đè bằng lịch hẹn mới)";
+				STR_MB_Result1 = L"Máy tính sẽ được tắt sau ";
+				STR_MB_Result2 = L" tiếng";
+				STR_MB_Result2A = L" phút";
+				STR_MI_Title1 = L" Bộ hẹn giờ:";
+				STR_MI_Title2 = L" Cài đặt:";
+				STR_MI_1 = L"→ Thời gian:";
+				STR_MI_2 = L"→  Chế độ:";
+				STR_MI_3 = L"→   Kiểu:";
+				STR_MI_4 = L" Fast Mode:";
+				STR_MI_5 = L" Extra Mode:";
+				STR_MI_6 = L"Huỷ lệnh hiện tại";
+				SetWindowTextW(MAIN_HWND, STR_AppTitle.c_str());
+				SetWindowTextW(SSCtrl_Title1, STR_MI_Title1.c_str());
+				SetWindowTextW(SSCtrl_Title2, STR_MI_Title2.c_str());
+				SetWindowTextW(SSCtrl_Text1, STR_MI_1.c_str());
+				SetWindowTextW(SSCtrl_Text2, STR_MI_2.c_str());
+				SetWindowTextW(SSCtrl_Text3, STR_MI_3.c_str());
+				SetWindowTextW(SSCtrl_Text4, STR_MI_4.c_str());
+				SetWindowTextW(SSCtrl_Text5, STR_MI_5.c_str());
+				SetWindowTextW(ButtonCtrl_CancelTimer, STR_MI_6.c_str());
 				SendMessageW(CBCtrl_3, CB_DELETESTRING, 0, NULL);
 				SendMessageW(CBCtrl_3, CB_DELETESTRING, 0, NULL);
 				WCHAR sdlOptions[2][7] =
@@ -446,20 +471,22 @@ namespace cWin32
 					wcscpy_s(tBuffer, sizeof(tBuffer) / sizeof(WCHAR), (WCHAR*)sdlOptions[i]);
 					SendMessageW(CBCtrl_3, CB_ADDSTRING, 0, (LPARAM)tBuffer);
 				}
-				if (!sType) SendMessageW(CBCtrl_3, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
+				if (!AP_UNIT) SendMessageW(CBCtrl_3, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
 				else SendMessageW(CBCtrl_3, CB_SETCURSEL, (WPARAM)1, (LPARAM)0);
 			}
 		}
 	}
 
+	// Refresh application draws
 	void RefreshApp()
 	{
-		UpdateWindow(G_hWnd);
+		UpdateWindow(MAIN_HWND);
 		RECT tRect;
-		GetClientRect(G_hWnd, &tRect);
-		RedrawWindow(G_hWnd, &tRect, NULL, RDW_INVALIDATE);
+		GetClientRect(MAIN_HWND, &tRect);
+		RedrawWindow(MAIN_HWND, &tRect, NULL, RDW_INVALIDATE);
 	}
 
+	// Load application parameters from config file
 	void LoadConfig()
 	{
 		short Attempts = 0;
@@ -484,13 +511,13 @@ namespace cWin32
 					if (value[0] == ' ') value = line.substr(delimiterPos + 2);
 
 					// Scan and read data from file
-					if (name == L"FastMode" || name == L"FastMode ") { if (value == L"1" || value == L"true" || value == L"on" || value == L"yes") cFastMode = true; else cFastMode = false; }
-					else if (name == L"ExtraMode" || name == L"ExtraMode ") { if (value == L"1" || value == L"true" || value == L"on" || value == L"yes") cExtraMode = true; else cExtraMode = false; }
+					if (name == L"FastMode" || name == L"FastMode ") { if (value == L"1" || value == L"true" || value == L"on" || value == L"yes") AP_FASTMODE = true; else AP_FASTMODE = false; }
+					else if (name == L"ExtraMode" || name == L"ExtraMode ") { if (value == L"1" || value == L"true" || value == L"on" || value == L"yes") AP_EXTRAMODE = true; else AP_EXTRAMODE = false; }
 					else if (name == L"Language" || name == L"Language ") 
 					{ 
-						if (value == L"EN" || value == L"en" || value == L"ENGLISH" || value == L"english") cLang = L"EN";
-						else if (value == L"VI" || value == L"vi" || value == L"VN" || value == L"vn") cLang = L"VI";
-						else cLang = L"EN";
+						if (value == L"EN" || value == L"en" || value == L"ENGLISH" || value == L"english") APP_LANGUAGE = L"EN";
+						else if (value == L"VI" || value == L"vi" || value == L"VN" || value == L"vn") APP_LANGUAGE = L"VI";
+						else APP_LANGUAGE = L"EN";
 					}
 				}
 				cFile.close(); // Close file
@@ -509,6 +536,7 @@ namespace cWin32
 		}
 	}
 
+	// Update config file
 	void UpdateConfig(std::wstring mID, std::wstring mVal)
 	{
 		std::wstring APPEND;
@@ -528,8 +556,8 @@ namespace cWin32
 					oFile.imbue(utf8_loc); // Set locale before making any conversion
 
 					apFastMode += mVal;
-					if (cExtraMode) apExtraMode += L"1"; else apExtraMode += L"0";
-					if (cLang == L"EN") apLang += L"en"; else if (cLang == L"VI") apLang += L"vi";
+					if (AP_EXTRAMODE) apExtraMode += L"1"; else apExtraMode += L"0";
+					if (APP_LANGUAGE == L"EN") apLang += L"en"; else if (APP_LANGUAGE == L"VI") apLang += L"vi";
 					
 
 					APPEND = L"# Available settings: FastMode, ExtraMode\n# Available languages: en, vi\n# Set to \"0\" to disable and \"1\" to enable\n# Example on enabling fast mode feature:\n# FastMode = 1\n\nFastMode = ";
@@ -563,9 +591,9 @@ namespace cWin32
 					std::locale utf8_loc(std::locale(), new std::codecvt_utf8<wchar_t>);
 					oFile.imbue(utf8_loc); // Set locale before making any conversion
 
-					if (cFastMode) apFastMode += L"1"; else apFastMode += L"0";
+					if (AP_FASTMODE) apFastMode += L"1"; else apFastMode += L"0";
 					apExtraMode += mVal;
-					if (cLang == L"EN") apLang += L"en"; else if (cLang == L"VI") apLang += L"vi";
+					if (APP_LANGUAGE == L"EN") apLang += L"en"; else if (APP_LANGUAGE == L"VI") apLang += L"vi";
 
 					APPEND = L"# Available settings: FastMode, ExtraMode\n# Available languages: en, vi\n# Set to \"0\" to disable and \"1\" to enable\n# Example on enabling fast mode feature:\n# FastMode = 1\n\nFastMode = ";
 					APPEND += apFastMode;
@@ -598,8 +626,8 @@ namespace cWin32
 					std::locale utf8_loc(std::locale(), new std::codecvt_utf8<wchar_t>);
 					oFile.imbue(utf8_loc); // Set locale before making any conversion
 
-					if (cFastMode) apFastMode += L"1"; else apFastMode += L"0";
-					if (cExtraMode) apExtraMode += L"1"; else apExtraMode += L"0";
+					if (AP_FASTMODE) apFastMode += L"1"; else apFastMode += L"0";
+					if (AP_EXTRAMODE) apExtraMode += L"1"; else apExtraMode += L"0";
 					apLang += mVal;
 
 					APPEND = L"# Available settings: FastMode, ExtraMode\n# Available languages: en, vi\n# Set to \"0\" to disable and \"1\" to enable\n# Example on enabling fast mode feature:\n# FastMode = 1\n\nFastMode = ";

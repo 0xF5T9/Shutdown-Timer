@@ -3,6 +3,8 @@
 #include <Uxtheme.h>
 #include <Dwmapi.h>
 
+///	ExternSol: Contain solutions
+
 class ExternSol
 {
 private:
@@ -24,6 +26,7 @@ public:
 
 public:
 
+	// Find window border thickness
 	void FindBorderThickness(HWND hWnd, RECT& rBorder)
 	{
 		SetRectEmpty(&rBorder);
@@ -43,6 +46,7 @@ public:
 		SetWindowPos(hWnd, NULL, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
 	}
 
+	// Set specific privilege for the application
 	BOOL SetPrivilege(HANDLE hToken, LPCTSTR lpszPrivilege, BOOL bEnablePrivilege)
 	{
 		TOKEN_PRIVILEGES tp;

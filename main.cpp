@@ -4,21 +4,23 @@
 
 #include "Sources/Headers/func.h"
 
+/// WinAPI Entry:
 int WINAPI wWinMain(
 	_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR lpCmdLine,
 	_In_ int nShowCmd)
 {
+	// Create and register main window class:
 	WNDCLASSW wc = { 0 };
 	wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
 	wc.hCursor = LoadCursorW(NULL, IDC_ARROW);
 	wc.hIcon = LoadIconW(hInstance, MAKEINTRESOURCEW(IDI_ICON1));
 	wc.hInstance = hInstance;
 	wc.lpszClassName = L"sdTimerApp1";
-	wc.lpfnWndProc = WindowProcedure;
+	wc.lpfnWndProc = WindowProcedure;	// Main window procedure
 
-	hInst = hInstance;
+	MAIN_HINSTANCE = hInstance;			// Load instance to global scope
 
 	if (!RegisterClassW(&wc))
 	{
@@ -26,21 +28,23 @@ int WINAPI wWinMain(
 		return -1;
 	}
 
-	cWin32::LoadConfig();
-	cWin32::SetLang(cLang, true);
+	// Create main window:
+	cWin32::LoadConfig();						// Load application parameters from config file
+	cWin32::SetLanguage(APP_LANGUAGE, true);	// Set application language (init mode)
 
-	cExtra::GetDesktopResolution(SCREEN_WIDTH, SCREEN_HEIGHT);
-	G_hWnd = CreateWindowW(
-		L"sdTimerApp1", AppTitle.c_str(),
+	cExtra::GetDesktopResolution(SCREEN_WIDTH, SCREEN_HEIGHT);	// Get OS Screen resolution
+	MAIN_HWND = CreateWindowW(
+		L"sdTimerApp1", STR_AppTitle.c_str(),
 		C_WS_OVERLAPPEDWINDOW | WS_THICKFRAME | WS_VISIBLE,
 		(SCREEN_WIDTH / 2) - (APPLICATION_WIDTH/2), (SCREEN_HEIGHT / 2) - (APPLICATION_HEIGHT/2),
 		APPLICATION_WIDTH, APPLICATION_HEIGHT,
 		NULL, NULL, hInstance, NULL);
 
+	// Message loop:
 	MSG msg = { 0 };
 	while (GetMessageW(&msg, NULL, 0, 0))
 	{
-		if (IsDialogMessageW(G_hWnd, &msg) == 0)
+		if (IsDialogMessageW(MAIN_HWND, &msg) == 0)
 		{
 			TranslateMessage(&msg);
 			DispatchMessageW(&msg);
@@ -50,25 +54,28 @@ int WINAPI wWinMain(
 	return 0;
 }
 
+/// Main Window Procedure:
 LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 {
 	switch (msg)
 	{
 		case WM_CREATE:
 		{
-			// cWin32::InitExtra(hWnd, rBorder);
+			cWin32::InitExtraBegin(1);
 			cWin32::InitMedia();
 			cWin32::InitControl(hWnd);
-			cWin32::EndCreate(hWnd);
+			cWin32::InitExtraEnd(hWnd);
 
 			break;
 		}
 
 		case WM_COMMAND:
 		{
+			// Combobox Messages:
 			if (HIWORD(wp) == CBN_SELCHANGE)
 			{
 				int iIndex = (int)SendMessageW((HWND)lp, CB_GETCURSEL, NULL, NULL);
+
 				if ((HWND)lp == CBCtrl_3)
 				{
 					if (iIndex == 0)
@@ -76,29 +83,30 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 						ShowWindow(EditCtrl_1, SW_HIDE);
 						ShowWindow(CBCtrl_1, SW_SHOW);
 						SetWindowTextW(EditCtrl_1, L"");
-						sType = 0;
+						AP_UNIT = 0;
 					}
 					else
 					{
 						ShowWindow(EditCtrl_1, SW_SHOW);
 						ShowWindow(CBCtrl_1, SW_HIDE);
 						SetWindowTextW(EditCtrl_1, L"");
-						sType = 1;
+						AP_UNIT = 1;
 					}
 				}
 				else if ((HWND)lp == CBCtrl_2)
 				{
 					if (iIndex == 0)
 					{
-						sMode = 0;
+						AP_SHUTDOWN_MODE = 0;
 					}
 					else
 					{
-						sMode = 1;
+						AP_SHUTDOWN_MODE = 1;
 					}
 				}
 			}
 
+			// Other Messages:
 			switch (wp)
 			{
 				case BUTTON_CLOSE:
@@ -116,16 +124,16 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 				case BUTTON_CONFIRM:
 				{
-					if (!sType)
+					if (!AP_UNIT)
 					{
 						WCHAR tBuffer_1[10];
 						memset(&tBuffer_1, 0, sizeof(tBuffer_1));
-						if (!cExtraMode)
+						if (!AP_EXTRAMODE)
 							GetWindowTextW(CBCtrl_1, tBuffer_1, 10);
 						else GetWindowTextW(EditCtrl_1e, tBuffer_1, 10);
 						int time = 0;
 
-						if (cExtraMode)
+						if (AP_EXTRAMODE)
 						{
 							std::wstring lwstr = tBuffer_1;
 							if (lwstr == L"")
@@ -135,37 +143,34 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 							if (time <= 0 || time > 24)
 							{
 								SetWindowTextW(EditCtrl_1e, L"");
-								if (!cFastMode) MessageBoxW(hWnd, MBLimit_1.c_str(), L"", MB_OK | MB_ICONINFORMATION);
+								if (!AP_FASTMODE) MessageBoxW(hWnd, STR_MB_Limit1.c_str(), L"", MB_OK | MB_ICONINFORMATION);
 								break;
 							}
 							SetWindowTextW(EditCtrl_1e, L"");
 						}
 						else time = std::stoi(tBuffer_1);
 
-						WCHAR tBuffer_2[MAX_COMPUTERNAME_LENGTH + 1];
-						memset(tBuffer_2, 0, sizeof(tBuffer_2));
-						DWORD machineNameSize = MAX_COMPUTERNAME_LENGTH + 1;
-						GetComputerNameW(tBuffer_2, &machineNameSize);
+						std::wstring machineName = cExtra::GetMachineName();
 						DWORD dMode = SHUTDOWN_POWEROFF;
-						if (sMode == 1)
+						if (AP_SHUTDOWN_MODE == 1)
 							dMode = SHUTDOWN_RESTART;
 
-						if (InitiateShutdownW(tBuffer_2, NULL, (time * 3600), dMode, SHTDN_REASON_MINOR_OTHER) == ERROR_SHUTDOWN_IS_SCHEDULED)
+						if (InitiateShutdownW((LPWSTR)machineName.c_str(), NULL, (time * 3600), dMode, SHTDN_REASON_MINOR_OTHER) == ERROR_SHUTDOWN_IS_SCHEDULED)
 						{
 							int iMB;
-							if (cFastMode)
+							if (AP_FASTMODE)
 								iMB = IDYES;
-							else iMB = MessageBoxW(hWnd, MBAlreadyScheduled.c_str(), L"", MB_YESNO | MB_ICONINFORMATION);
+							else iMB = MessageBoxW(hWnd, STR_MB_AlreadyScheduled.c_str(), L"", MB_YESNO | MB_ICONINFORMATION);
 							if (iMB == IDYES)
 							{
-								AbortSystemShutdownW(tBuffer_2);
-								InitiateShutdownW(tBuffer_2, NULL, (time * 3600), dMode, SHTDN_REASON_MINOR_OTHER);
-								if (!cFastMode) MessageBoxW(hWnd, (MBResult_1 + std::to_wstring(time) + MBResult_2).c_str(), L"", MB_OK | MB_ICONINFORMATION);
+								AbortSystemShutdownW((LPWSTR)machineName.c_str());
+								InitiateShutdownW((LPWSTR)machineName.c_str(), NULL, (time * 3600), dMode, SHTDN_REASON_MINOR_OTHER);
+								if (!AP_FASTMODE) MessageBoxW(hWnd, (STR_MB_Result1 + std::to_wstring(time) + STR_MB_Result2).c_str(), L"", MB_OK | MB_ICONINFORMATION);
 								break;
 							}
 							else break;
 						}
-						if (!cFastMode) MessageBoxW(hWnd, (MBResult_1 + std::to_wstring(time) + MBResult_2).c_str(), L"", MB_OK | MB_ICONINFORMATION);
+						if (!AP_FASTMODE) MessageBoxW(hWnd, (STR_MB_Result1 + std::to_wstring(time) + STR_MB_Result2).c_str(), L"", MB_OK | MB_ICONINFORMATION);
 					}
 					else
 					{
@@ -181,35 +186,32 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 						if (time <= 0 || time > 1440)
 						{
 							SetWindowTextW(EditCtrl_1, L"");
-							if (!cFastMode) MessageBoxW(hWnd, MBLimit_2.c_str(), L"", MB_OK | MB_ICONINFORMATION);
+							if (!AP_FASTMODE) MessageBoxW(hWnd, STR_MB_Limit2.c_str(), L"", MB_OK | MB_ICONINFORMATION);
 							break;
 						}
 						SetWindowTextW(EditCtrl_1, L"");
 
-						WCHAR tBuffer_2[MAX_COMPUTERNAME_LENGTH + 1];
-						memset(tBuffer_2, 0, sizeof(tBuffer_2));
-						DWORD machineNameSize = MAX_COMPUTERNAME_LENGTH + 1;
-						GetComputerNameW(tBuffer_2, &machineNameSize);
+						std::wstring machineName = cExtra::GetMachineName();
 						DWORD dMode = SHUTDOWN_POWEROFF;
-						if (sMode == 1)
+						if (AP_SHUTDOWN_MODE == 1)
 							dMode = SHUTDOWN_RESTART;
 
-						if (InitiateShutdownW(tBuffer_2, NULL, (time * 60), dMode, SHTDN_REASON_MINOR_OTHER) == ERROR_SHUTDOWN_IS_SCHEDULED)
+						if (InitiateShutdownW((LPWSTR)machineName.c_str(), NULL, (time * 60), dMode, SHTDN_REASON_MINOR_OTHER) == ERROR_SHUTDOWN_IS_SCHEDULED)
 						{
 							int iMB;
-							if (cFastMode)
+							if (AP_FASTMODE)
 								iMB = IDYES;
-							else iMB = MessageBoxW(hWnd, MBAlreadyScheduled.c_str(), L"", MB_YESNO | MB_ICONINFORMATION);
+							else iMB = MessageBoxW(hWnd, STR_MB_AlreadyScheduled.c_str(), L"", MB_YESNO | MB_ICONINFORMATION);
 							if (iMB == IDYES)
 							{
-								AbortSystemShutdownW(tBuffer_2);
-								InitiateShutdownW(tBuffer_2, NULL, (time * 60), dMode, SHTDN_REASON_MINOR_OTHER);
-								if (!cFastMode) MessageBoxW(hWnd, (MBResult_1 + std::to_wstring(time) + MBResult_2a).c_str(), L"", MB_OK | MB_ICONINFORMATION);
+								AbortSystemShutdownW((LPWSTR)machineName.c_str());
+								InitiateShutdownW((LPWSTR)machineName.c_str(), NULL, (time * 60), dMode, SHTDN_REASON_MINOR_OTHER);
+								if (!AP_FASTMODE) MessageBoxW(hWnd, (STR_MB_Result1 + std::to_wstring(time) + STR_MB_Result2A).c_str(), L"", MB_OK | MB_ICONINFORMATION);
 								break;
 							}
 							else break;
 						}
-						if (!cFastMode) MessageBoxW(hWnd, (MBResult_1 + std::to_wstring(time) + MBResult_2a).c_str(), L"", MB_OK | MB_ICONINFORMATION);
+						if (!AP_FASTMODE) MessageBoxW(hWnd, (STR_MB_Result1 + std::to_wstring(time) + STR_MB_Result2A).c_str(), L"", MB_OK | MB_ICONINFORMATION);
 					}
 
 					break;
@@ -217,12 +219,9 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 				case BUTTON_CANCEL:
 				{
-					WCHAR tBuffer[MAX_COMPUTERNAME_LENGTH + 1];
-					memset(tBuffer, 0, sizeof(tBuffer));
-					DWORD machineNameSize = MAX_COMPUTERNAME_LENGTH + 1;
-					GetComputerNameW(tBuffer, &machineNameSize);
+					std::wstring lwstr = cExtra::GetMachineName();
 
-					AbortSystemShutdownW(tBuffer);
+					AbortSystemShutdownW((LPWSTR)lwstr.c_str());
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 
 					break;
@@ -230,21 +229,21 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 				case BUTTON_CHANGELANGUAGE:
 				{
-					if (cLang == L"EN")
+					if (APP_LANGUAGE == L"EN")
 					{
 						cWin32::UpdateConfig(L"LANGUAGE", L"vi");
-						cWin32::SetLang(L"VI");
+						cWin32::SetLanguage(L"VI");
 						SetWindowTextW(ButtonCtrl_ChangeLanguage, L"VI");
 						cWin32::RefreshApp();
-						cLang = L"VI";
+						APP_LANGUAGE = L"VI";
 					}
-					else if (cLang == L"VI")
+					else if (APP_LANGUAGE == L"VI")
 					{
 						cWin32::UpdateConfig(L"LANGUAGE", L"en");
-						cWin32::SetLang(L"EN");
+						cWin32::SetLanguage(L"EN");
 						SetWindowTextW(ButtonCtrl_ChangeLanguage, L"EN");
 						cWin32::RefreshApp();
-						cLang = L"EN";
+						APP_LANGUAGE = L"EN";
 					}
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 
@@ -254,7 +253,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 				case BUTTON_FMODEON:
 				{
 					cWin32::UpdateConfig(L"FASTMODE", L"1");
-					cFastMode = 1;
+					AP_FASTMODE = 1;
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 					break;
 				}
@@ -262,7 +261,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 				case BUTTON_FMODEOFF:
 				{
 					cWin32::UpdateConfig(L"FASTMODE", L"0");
-					cFastMode = 0;
+					AP_FASTMODE = 0;
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 					break;
 				}
@@ -277,8 +276,8 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 					SendMessageW(CBCtrl_3, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
 					SetWindowTextW(EditCtrl_1e, L"");
 
-					sType = 0;
-					cExtraMode = 1;
+					AP_UNIT = 0;
+					AP_EXTRAMODE = 1;
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 					break;
 				}
@@ -292,8 +291,8 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 					EnableWindow(CBCtrl_3, 1);
 					SetWindowTextW(EditCtrl_1e, L"");
 
-					sType = 0;
-					cExtraMode = 0;
+					AP_UNIT = 0;
+					AP_EXTRAMODE = 0;
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 					break;
 				}
@@ -318,6 +317,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hWnd, &ps);
 
+			/*
 			{	
 				RECT l1rc = ps.rcPaint;
 				BP_PAINTPARAMS params = { sizeof(params), BPPF_NOCLIP | BPPF_ERASE };
@@ -329,12 +329,13 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 					EndBufferedPaint(hBuffer, TRUE);
 				}
 			}
+			*/
 
 			FillRect(hdc, &ps.rcPaint, hBrush_SecDark);
 
-			RECT rTitle_Paint = rTitle;
+			RECT rTitle_Paint = RECT_Title;
 			FillRect(hdc, &rTitle_Paint, hBrush_PriDark);
-			RECT rBottom_Paint = { 0, 400+2, 500, 399+2 };
+			RECT rBottom_Paint = { 0, 402, 500, 401 };
 			FillRect(hdc, &rBottom_Paint, hBrush_BorderGrey);
 
 			RECT rDraw1 = { 40, 100, 460, 102 };
@@ -355,8 +356,8 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 				SetTextColor((HDC)wp, RGB(0, 0, 0));
 				SetBkColor((HDC)wp, RGB(0, 0, 0));
 
-				hBrush_STATIC1 = hBrush_PriDark;
-				return (LRESULT)hBrush_STATIC1;
+				hBrush_CTLCOLORSTATIC = hBrush_PriDark;
+				return (LRESULT)hBrush_CTLCOLORSTATIC;
 			}
 			else
 			{
@@ -364,8 +365,8 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 				SetTextColor((HDC)wp, CLR_PriDark);
 				SetBkColor((HDC)wp, CLR_SecDark);
 
-				hBrush_STATIC1 = hBrush_SecDark;
-				return (LRESULT)hBrush_STATIC1;
+				hBrush_CTLCOLORSTATIC = hBrush_SecDark;
+				return (LRESULT)hBrush_CTLCOLORSTATIC;
 			}
 
 			break;
@@ -398,13 +399,13 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 		case WM_NCHITTEST:
 		{
 			const LRESULT result = ::DefWindowProcW(hWnd, msg, wp, lp);
+			RECT lrc = RECT_Title;
 			POINT pt;
 			pt.x = GET_X_LPARAM(lp);
 			pt.y = GET_Y_LPARAM(lp);
-			RECT lrc = rTitle;
 			MapWindowPoints(hWnd, NULL, reinterpret_cast<POINT*>(&lrc), (sizeof(RECT) / sizeof(POINT)));
 			
-			if (result == HTLEFT || result == HTRIGHT || result == HTTOP)
+			if (result == HTLEFT || result == HTRIGHT || result == HTTOP)	// Null size border events
 				return HTCAPTION;
 
 			if ((result == HTCLIENT) && (PtInRect(&lrc, pt)))
@@ -417,70 +418,17 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 		case WM_CTLCOLORBTN:
 		{
-			if (!hBrush_STATIC2)
+			if (!hBrush_CTLCOLORBTN)
 			{
-				hBrush_STATIC2 = CreateSolidBrush(RGB(217, 218, 222));
+				hBrush_CTLCOLORBTN = hBrush_SecDark;
 			}
 
-			return (LRESULT)hBrush_STATIC2;
+			return (LRESULT)hBrush_CTLCOLORBTN;
 		}
 
-		/*
-		case WM_NOTIFY:
-		{
-			LPNMHDR header = reinterpret_cast<LPNMHDR>(lp);
-			switch (header->code)
-			{
-				case BCN_HOTITEMCHANGE:
-				{
-					NMBCHOTITEM* hot_item = reinterpret_cast<NMBCHOTITEM*>(lp);
-
-					if (header->hwndFrom == ButtonCtrl_SetTimer)
-					{
-						// Handle to the button
-						HWND button_handle = header->hwndFrom;
-
-						// ID of the button, if using resources
-						UINT_PTR button_id = header->idFrom;
-
-						// Check if the mouse is entering or leaving the hover area
-						bool entering = hot_item->dwFlags & HICF_ENTERING;
-						if (entering)
-						{
-							MessageBeep(MB_OK);
-						}
-						else 
-						{
-							MessageBeep(MB_OK);
-						}
-					}
-
-					return 0;
-				}
-			}
-			return 0;
-		}
-		*/
-
-		/*
-		case WM_DRAWITEM:
-		{
-			DRAWITEMSTRUCT* pdis = (DRAWITEMSTRUCT*)lp; // Extract DRAWITEMSTRUCT pointer from lp
-			switch (pdis->CtlID)
-			{
-				case BUTTON_CONFIRM:
-				{
-					DrawIconEx()...
-					break;
-				}
-				default:
-					break;
-			}
-			return (TRUE);
-		}
-		*/
 		case WM_WINDOWPOSCHANGED:
 		{
+			// Null all "invalid" resize events
 			WINDOWPOS* wndpos = (WINDOWPOS*)lp;
 			if (wndpos->cx > APPLICATION_WIDTH || wndpos->cy > APPLICATION_HEIGHT)
 				SetWindowPos(hWnd, NULL, (SCREEN_WIDTH / 2) - (APPLICATION_WIDTH / 2), (SCREEN_HEIGHT / 2) - (APPLICATION_HEIGHT / 2), APPLICATION_WIDTH, APPLICATION_HEIGHT, SWP_NOZORDER);
@@ -524,85 +472,4 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 	}
 
 	return DefWindowProcW(hWnd, msg, wp, lp);
-}
-
-LRESULT CALLBACK SSButtonHover(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
-{
-	static bool isHovering = 0;
-
-	switch (uMsg)
-	{
-		case WM_NCDESTROY:
-		{
-			RemoveWindowSubclass(hWnd, &SSButtonHover, uIdSubclass);
-			break;
-		}
-
-		case WM_MOUSEHOVER:
-		{
-			return 0;
-		}
-
-		case WM_MOUSELEAVE:
-		{
-			if (isHovering)
-			{
-				if (hWnd == SSCtrl_Close)
-				{
-					SendMessageW(SSCtrl_Close, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Close);
-				}
-				else if (hWnd == SSCtrl_Minimize)
-				{
-					SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize);
-				}
-				else if (hWnd == SSCtrl_Github)
-				{
-					SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github);
-				}
-			}
-			
-			isHovering = 0;
-			return 0;
-		}
-
-		case WM_MOUSEMOVE:
-		{
-			TRACKMOUSEEVENT tme;
-			tme.cbSize = sizeof(TRACKMOUSEEVENT);
-			tme.dwFlags = TME_LEAVE;
-			tme.hwndTrack = hWnd;
-
-			if (hWnd == SSCtrl_Close)
-			{
-				TrackMouseEvent(&tme);
-				if (!isHovering)
-				{
-					SendMessageW(SSCtrl_Close, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Close_H);
-					isHovering = 1;
-				}
-			}
-			else if (hWnd == SSCtrl_Minimize)
-			{
-				TrackMouseEvent(&tme);
-				if (!isHovering)
-				{
-					SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize_H);
-					isHovering = 1;
-				}
-			}
-			else if (hWnd == SSCtrl_Github)
-			{
-				TrackMouseEvent(&tme);
-				if (!isHovering)
-				{
-					SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github_H);
-					isHovering = 1;
-				}
-			}
-
-			return 0;
-		}
-	}
-
-	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }

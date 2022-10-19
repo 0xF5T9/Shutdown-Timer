@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="global.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Sources\Subclasses\c_subclass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources\Headers\c_resource.h" />

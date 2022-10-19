@@ -1,8 +1,7 @@
 #pragma once
-#include "../Resources/resource.h"
+#include "../Resources/resource.h" // Project's resources
 
-/// PROGRAM CUSTOM CONSTANTS
-
+/// APPLICATION CONSTANTS:
 #define BUTTON_CLOSE 101
 #define BUTTON_MINIMIZE 102
 #define BUTTON_CONFIRM 103
@@ -14,7 +13,7 @@
 #define BUTTON_GITHUB 109
 #define BUTTON_CHANGELANGUAGE 110
 
-/// PROGRAM CUSTOM WINDOW STYLES
+/// APPLICATION WINDOW STYLES:
 #define C_WS_OVERLAPPEDWINDOW (WS_OVERLAPPED     | \
                              WS_CAPTION        | \
                              WS_SYSMENU        | \
