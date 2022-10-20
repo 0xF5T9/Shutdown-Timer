@@ -42,3 +42,6 @@ extern HBRUSH hBrush_PriDark, hBrush_SecDark, hBrush_BorderGrey;
 // STRINGS:
 extern std::wstring STR_AppTitle, STR_MB_Limit1, STR_MB_Limit2, STR_MB_AlreadyScheduled, STR_MB_Result1, STR_MB_Result2, STR_MB_Result2A;
 extern std::wstring STR_MI_Title1, STR_MI_Title2, STR_MI_1, STR_MI_2, STR_MI_3, STR_MI_4, STR_MI_5, STR_MI_6, STR_MI_7;
+
+// MAPS:
+extern std::map<HWND, std::pair<HICON, HICON>> HoverMap;

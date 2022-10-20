@@ -4,6 +4,7 @@
 #include <fstream>
 #include <locale>
 #include <codecvt>
+#include <map>
 #include <Windows.h>
 #include <Windowsx.h>
 #include <Uxtheme.h>
@@ -33,19 +34,12 @@ LRESULT CALLBACK SSButtonHover(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 		case WM_MOUSELEAVE:
 		{
-			if (isHovering)
+			for (auto& x : HoverMap)
 			{
-				if (hWnd == SSCtrl_Close)
+				if ((HWND)x.first == hWnd)
 				{
-					SendMessageW(SSCtrl_Close, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Close);
-				}
-				else if (hWnd == SSCtrl_Minimize)
-				{
-					SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize);
-				}
-				else if (hWnd == SSCtrl_Github)
-				{
-					SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github);
+					SendMessageW(x.first, STM_SETIMAGE, IMAGE_ICON, (LPARAM)x.second.second);
+					break;
 				}
 			}
 
@@ -55,36 +49,22 @@ LRESULT CALLBACK SSButtonHover(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 		case WM_MOUSEMOVE:
 		{
-			TRACKMOUSEEVENT tme;
-			tme.cbSize = sizeof(TRACKMOUSEEVENT);
-			tme.dwFlags = TME_LEAVE;
-			tme.hwndTrack = hWnd;
+			for (auto& x : HoverMap)
+			{
+				if ((HWND)x.first == hWnd)
+				{
+					if (!isHovering)
+					{
+						TRACKMOUSEEVENT tme;
+						tme.cbSize = sizeof(TRACKMOUSEEVENT);
+						tme.dwFlags = TME_LEAVE;
+						tme.hwndTrack = hWnd;
+						TrackMouseEvent(&tme);
 
-			if (hWnd == SSCtrl_Close)
-			{
-				TrackMouseEvent(&tme);
-				if (!isHovering)
-				{
-					SendMessageW(SSCtrl_Close, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Close_H);
-					isHovering = 1;
-				}
-			}
-			else if (hWnd == SSCtrl_Minimize)
-			{
-				TrackMouseEvent(&tme);
-				if (!isHovering)
-				{
-					SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize_H);
-					isHovering = 1;
-				}
-			}
-			else if (hWnd == SSCtrl_Github)
-			{
-				TrackMouseEvent(&tme);
-				if (!isHovering)
-				{
-					SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github_H);
-					isHovering = 1;
+						SendMessageW(x.first, STM_SETIMAGE, IMAGE_ICON, (LPARAM)x.second.first);
+						isHovering = 1;
+					}
+					break;
 				}
 			}
 

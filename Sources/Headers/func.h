@@ -6,6 +6,7 @@
 #include <fstream>
 #include <locale>
 #include <codecvt>
+#include <map>
 #include <Windows.h>
 #include <Windowsx.h>
 #include <Uxtheme.h>
@@ -333,6 +334,11 @@ namespace cWin32
 			DestroyWindow(MAIN_HWND);
 		}
 		CloseHandle(hToken);
+
+		// Maping hover icons
+		HoverMap.insert(std::make_pair(SSCtrl_Close, std::make_pair(hIcon_Close_H, hIcon_Close)));
+		HoverMap.insert(std::make_pair(SSCtrl_Minimize, std::make_pair(hIcon_Minimize_H, hIcon_Minimize)));
+		HoverMap.insert(std::make_pair(SSCtrl_Github, std::make_pair(hIcon_Github_H, hIcon_Github)));
 
 		return true;
 	}

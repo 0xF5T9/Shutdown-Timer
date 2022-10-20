@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <string>
+#include <map>
 #include <Windows.h>
 #include "Sources/Headers/solution.h"
 
@@ -45,3 +46,6 @@ HBRUSH hBrush_PriDark = CreateSolidBrush(RGB(22, 22, 25)), hBrush_SecDark = Crea
 // STRINGS:
 std::wstring STR_AppTitle, STR_MB_Limit1, STR_MB_Limit2, STR_MB_AlreadyScheduled, STR_MB_Result1, STR_MB_Result2, STR_MB_Result2A;
 std::wstring STR_MI_Title1, STR_MI_Title2, STR_MI_1, STR_MI_2, STR_MI_3, STR_MI_4, STR_MI_5, STR_MI_6, STR_MI_7;
+
+// MAPS:
+std::map<HWND, std::pair<HICON, HICON>> HoverMap;
