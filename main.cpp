@@ -13,7 +13,7 @@ int WINAPI wWinMain(
 {
 	// Create and register main window class:
 	WNDCLASSW wc = { 0 };
-	wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
+	wc.hbrBackground = NULL;
 	wc.hCursor = LoadCursorW(NULL, IDC_ARROW);
 	wc.hIcon = LoadIconW(hInstance, MAKEINTRESOURCEW(IDI_ICON1));
 	wc.hInstance = hInstance;
@@ -346,6 +346,11 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 			EndPaint(hWnd, &ps);
 
 			break;
+		}
+
+		case WM_ERASEBKGND:
+		{
+			return (LRESULT)1;
 		}
 
 		case WM_CTLCOLORSTATIC:

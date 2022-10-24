@@ -487,9 +487,7 @@ namespace cWin32
 	void RefreshApp()
 	{
 		UpdateWindow(MAIN_HWND);
-		RECT tRect;
-		GetClientRect(MAIN_HWND, &tRect);
-		RedrawWindow(MAIN_HWND, &tRect, NULL, RDW_INVALIDATE);
+		RedrawWindow(MAIN_HWND, NULL, NULL, RDW_INVALIDATE | RDW_ERASE);
 	}
 
 	// Load application parameters from config file
