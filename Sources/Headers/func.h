@@ -178,7 +178,7 @@ namespace cWin32
 			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 64, 420, 30, hWnd, NULL, NULL, NULL);
 
 		SSCtrl_Text1 = CreateWindowW(L"STATIC", STR_MI_1.c_str(),
-			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 111, 420, 30, hWnd, NULL, NULL, NULL);
+			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 111, 110, 30, hWnd, NULL, NULL, NULL);
 
 		CBCtrl_1 = CreateWindowW(L"COMBOBOX", L"",
 			WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST, 155, 109, 110, 30, hWnd, NULL, NULL, NULL);
@@ -190,13 +190,13 @@ namespace cWin32
 			WS_VISIBLE | WS_CHILD | WS_BORDER | ES_NUMBER, 155, 109, 110, 30, hWnd, NULL, NULL, NULL);
 
 		SSCtrl_Text2 = CreateWindowW(L"STATIC", STR_MI_2.c_str(),
-			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 146, 420, 30, hWnd, NULL, NULL, NULL);
+			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 146, 110, 30, hWnd, NULL, NULL, NULL);
 		
 		CBCtrl_2 = CreateWindowW(L"COMBOBOX", L"",
 			WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST, 155, 144, 110, 30, hWnd, NULL, NULL, NULL);
 
 		SSCtrl_Text3 = CreateWindowW(L"STATIC", STR_MI_3.c_str(),
-			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 181, 420, 30, hWnd, NULL, NULL, NULL);
+			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 181, 110, 30, hWnd, NULL, NULL, NULL);
 
 		CBCtrl_3 = CreateWindowW(L"COMBOBOX", L"",
 			WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST, 155, 179, 110, 30, hWnd, NULL, NULL, NULL);
@@ -209,7 +209,7 @@ namespace cWin32
 			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 224, 420, 30, hWnd, NULL, NULL, NULL);
 
 		SSCtrl_Text4 = CreateWindowW(L"STATIC", STR_MI_4.c_str(),
-		    WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 271, 420, 30, hWnd, NULL, NULL, NULL);
+		    WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 271, 100, 30, hWnd, NULL, NULL, NULL);
 
 		ButtonCtrl_FMOFF = CreateWindowW(L"BUTTON", L"OFF",
 			WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON | WS_GROUP, 
@@ -224,7 +224,7 @@ namespace cWin32
 		else SendMessageW(ButtonCtrl_FMOFF, BM_SETCHECK, BST_CHECKED, NULL);
 
 		SSCtrl_Text5 = CreateWindowW(L"STATIC", STR_MI_5.c_str(),
-			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 306, 420, 30, hWnd, NULL, NULL, NULL);
+			WS_VISIBLE | WS_CHILD | SS_LEFT, 40, 306, 105, 30, hWnd, NULL, NULL, NULL);
 
 		ButtonCtrl_EMOFF = CreateWindowW(L"BUTTON", L"OFF",
 			WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON | WS_GROUP,

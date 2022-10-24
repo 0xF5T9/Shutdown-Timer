@@ -35,7 +35,7 @@ int WINAPI wWinMain(
 	cExtra::GetDesktopResolution(SCREEN_WIDTH, SCREEN_HEIGHT);	// Get OS Screen resolution
 	MAIN_HWND = CreateWindowW(
 		L"sdTimerApp1", STR_AppTitle.c_str(),
-		C_WS_OVERLAPPEDWINDOW | WS_THICKFRAME | WS_VISIBLE,
+		C_WS_OVERLAPPEDWINDOW | WS_THICKFRAME | WS_VISIBLE | WS_CLIPCHILDREN,
 		(SCREEN_WIDTH / 2) - (APPLICATION_WIDTH/2), (SCREEN_HEIGHT / 2) - (APPLICATION_HEIGHT/2),
 		APPLICATION_WIDTH, APPLICATION_HEIGHT,
 		NULL, NULL, hInstance, NULL);
@@ -350,6 +350,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 		case WM_ERASEBKGND:
 		{
+			InvalidateRect(ButtonCtrl_CancelTimer, NULL, TRUE);
 			return (LRESULT)1;
 		}
 
