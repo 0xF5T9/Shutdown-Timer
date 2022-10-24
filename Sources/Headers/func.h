@@ -19,6 +19,7 @@
 /// FORWARD DECLARATIONS:
 LRESULT CALLBACK WindowProcedure(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK SSButtonHover(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
+LRESULT CALLBACK ButtonHover_OD(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 
 /// FUNCTIONS:
 namespace cExtra 
@@ -110,6 +111,13 @@ namespace cExtra
 
 		std::wstring lwstr = tBuffer;
 		return lwstr;
+	}
+
+	void RemoveWindowStyle(HWND& hWnd, LONG Style)
+	{
+		DWORD dwStyle = ::GetClassLongW(hWnd, GCL_STYLE);
+		dwStyle &= ~Style;
+		::SetClassLongW(hWnd, GCL_STYLE, dwStyle);
 	}
 }
 
@@ -241,10 +249,15 @@ namespace cWin32
 		}
 
 		ButtonCtrl_CancelTimer = CreateWindowW(L"BUTTON", STR_MI_6.c_str(),
-			WS_VISIBLE | WS_CHILD | BS_CENTER, 90, 338, 163, 33, hWnd, (HMENU)BUTTON_CANCEL, NULL, NULL);
+			WS_VISIBLE | WS_CHILD | BS_OWNERDRAW, 90+2, 338+1, 163-2, 33-2, hWnd, (HMENU)BUTTON_CANCEL, NULL, NULL);
 
 		ButtonCtrl_ChangeLanguage = CreateWindowW(L"BUTTON", STR_MI_7.c_str(),
-			WS_VISIBLE | WS_CHILD | BS_CENTER, 40+6, 338, 45, 33, hWnd, (HMENU)BUTTON_CHANGELANGUAGE, NULL, NULL);
+			WS_VISIBLE | WS_CHILD | BS_OWNERDRAW, 40+6, 338+1, 45-2, 33-2, hWnd, (HMENU)BUTTON_CHANGELANGUAGE, NULL, NULL);
+
+		SetWindowSubclass(ButtonCtrl_CancelTimer, &ButtonHover_OD, NULL, NULL);
+		SetWindowSubclass(ButtonCtrl_ChangeLanguage, &ButtonHover_OD, NULL, NULL);
+		cExtra::RemoveWindowStyle(ButtonCtrl_CancelTimer, CS_DBLCLKS);
+
 
 		SSCtrl_Github = CreateWindowW(L"STATIC", L"",
 			WS_VISIBLE | WS_CHILD | SS_NOTIFY | SS_ICON | SS_CENTERIMAGE, 380, 338, 80, 38, hWnd, (HMENU)BUTTON_GITHUB, NULL, NULL);
@@ -487,7 +500,7 @@ namespace cWin32
 	void RefreshApp()
 	{
 		UpdateWindow(MAIN_HWND);
-		RedrawWindow(MAIN_HWND, NULL, NULL, RDW_INVALIDATE | RDW_ERASE);
+		RedrawWindow(MAIN_HWND, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 	}
 
 	// Load application parameters from config file
