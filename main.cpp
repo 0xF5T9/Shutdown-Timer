@@ -350,7 +350,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 		case WM_ERASEBKGND:
 		{
-			InvalidateRect(ButtonCtrl_CancelTimer, NULL, TRUE);
+			RedrawWindow(ButtonCtrl_CancelTimer, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 			return (LRESULT)1;
 		}
 
