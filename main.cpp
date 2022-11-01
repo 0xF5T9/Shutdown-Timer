@@ -13,14 +13,14 @@ int WINAPI wWinMain(
 {
 	// Create and register main window class:
 	WNDCLASSW wc = { 0 };
-	wc.hbrBackground = NULL;
+	wc.hbrBackground = NULL; // Set window class background to NULL, handling "WM_ERASEBKGND" manually (Reduce flickering)
 	wc.hCursor = LoadCursorW(NULL, IDC_ARROW);
 	wc.hIcon = LoadIconW(hInstance, MAKEINTRESOURCEW(IDI_ICON1));
 	wc.hInstance = hInstance;
 	wc.lpszClassName = L"sdTimerApp1";
-	wc.lpfnWndProc = WindowProcedure;	// Main window procedure
+	wc.lpfnWndProc = WindowProcedure;
 
-	MAIN_HINSTANCE = hInstance;			// Load instance to global scope
+	MAIN_HINSTANCE = hInstance;	// Load instance to global scope
 
 	if (!RegisterClassW(&wc))
 	{
@@ -32,13 +32,19 @@ int WINAPI wWinMain(
 	cWin32::LoadConfig();						// Load application parameters from config file
 	cWin32::SetLanguage(APP_LANGUAGE, true);	// Set application language (init mode)
 
-	cExtra::GetDesktopResolution(SCREEN_WIDTH, SCREEN_HEIGHT);	// Get OS Screen resolution
-	MAIN_HWND = CreateWindowW(
+	cExtra::GetDesktopResolution(SCREEN_WIDTH, SCREEN_HEIGHT);	// Get OS Screen resolution (To calculate and make the app appear in the center of the screen)
+	MAIN_HWND = CreateWindowExW(WS_EX_LAYERED,
 		L"sdTimerApp1", STR_AppTitle.c_str(),
-		C_WS_OVERLAPPEDWINDOW | WS_THICKFRAME | WS_VISIBLE | WS_CLIPCHILDREN,
+		WS_POPUP |			// Popup window style, remove standard title bar
+		WS_THICKFRAME |		// For window drop-shadow effects
+		WS_CAPTION |		// Enable some aero animation/transition
+		WS_MINIMIZEBOX |	// Enable minimize aero animation/transition
+		WS_VISIBLE |		// Make the window visible
+		WS_CLIPCHILDREN,	// Excludes the area occupied by child windows when drawing occurs within the parent window (Reduce flickering)
 		(SCREEN_WIDTH / 2) - (APPLICATION_WIDTH/2), (SCREEN_HEIGHT / 2) - (APPLICATION_HEIGHT/2),
 		APPLICATION_WIDTH, APPLICATION_HEIGHT,
 		NULL, NULL, hInstance, NULL);
+	SetLayeredWindowAttributes(MAIN_HWND, CLR_RareColor, NULL, LWA_COLORKEY); // WS_EX_LAYERED + LWA_COLORKEY remove the white frame that appear after call DwmExtendFrameIntoClientArea() [func.h | 518 ]
 
 	// Message loop:
 	MSG msg = { 0 };
@@ -66,7 +72,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 			cWin32::InitControl(hWnd);
 			cWin32::InitExtraEnd(hWnd);
 
-			break;
+			return (LRESULT)0;
 		}
 
 		case WM_COMMAND:
@@ -111,15 +117,16 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 			{
 				case BUTTON_CLOSE:
 				{
+					cWin32::OnExitApp(hWnd);
 					DestroyWindow(hWnd);
-					break;
+					return (LRESULT)0;
 				}
 
 				case BUTTON_MINIMIZE:
 				{
 					ShowWindow(hWnd, SW_SHOWMINIMIZED);
 					SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize);
-					break;
+					return (LRESULT)0;
 				}
 
 				case BUTTON_CONFIRM:
@@ -214,7 +221,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 						if (!AP_FASTMODE) MessageBoxW(hWnd, (STR_MB_Result1 + std::to_wstring(time) + STR_MB_Result2A).c_str(), L"", MB_OK | MB_ICONINFORMATION);
 					}
 
-					break;
+					return (LRESULT)0;
 				}
 
 				case BUTTON_CANCEL:
@@ -224,7 +231,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 					AbortSystemShutdownW((LPWSTR)lwstr.c_str());
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 
-					break;
+					return (LRESULT)0;
 				}
 
 				case BUTTON_CHANGELANGUAGE:
@@ -247,7 +254,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 					}
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
 
-					break;
+					return (LRESULT)0;
 				}
 
 				case BUTTON_FMODEON:
@@ -255,7 +262,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 					cWin32::UpdateConfig(L"FASTMODE", L"1");
 					AP_FASTMODE = 1;
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
-					break;
+					return (LRESULT)0;
 				}
 
 				case BUTTON_FMODEOFF:
@@ -263,7 +270,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 					cWin32::UpdateConfig(L"FASTMODE", L"0");
 					AP_FASTMODE = 0;
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
-					break;
+					return (LRESULT)0;
 				}
 
 				case BUTTON_EMODEON:
@@ -279,7 +286,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 					AP_UNIT = 0;
 					AP_EXTRAMODE = 1;
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
-					break;
+					return (LRESULT)0;
 				}
 
 				case BUTTON_EMODEOFF:
@@ -294,7 +301,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 					AP_UNIT = 0;
 					AP_EXTRAMODE = 0;
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
-					break;
+					return (LRESULT)0;
 				}
 
 				case BUTTON_GITHUB:
@@ -302,7 +309,7 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 					ShellExecuteW(NULL, L"open", L"https://github.com/0xF5T9/Shutdown-Timer", NULL, NULL, SW_SHOWNORMAL);
 					SendMessageW(SSCtrl_Github, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Github);
 					PlaySoundW(MAKEINTRESOURCEW(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
-					break;
+					return (LRESULT)0;
 				}
 
 				default:
@@ -317,39 +324,32 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hWnd, &ps);
 
-			/*
-			{	
-				RECT l1rc = ps.rcPaint;
-				BP_PAINTPARAMS params = { sizeof(params), BPPF_NOCLIP | BPPF_ERASE };
-				HDC memdc;
-				HPAINTBUFFER hBuffer = BeginBufferedPaint(hdc, &l1rc, BPBF_TOPDOWNDIB, &params, &memdc);
-				if (hBuffer)
-				{
-					BufferedPaintSetAlpha(hBuffer, &l1rc, 255);
-					EndBufferedPaint(hBuffer, TRUE);
-				}
-			}
-			*/
-
+			// Paint background color
 			FillRect(hdc, &ps.rcPaint, hBrush_SecDark);
 
+			// Paint title
 			RECT rTitle_Paint = RECT_Title;
 			FillRect(hdc, &rTitle_Paint, hBrush_PriDark);
-			RECT rBottom_Paint = { 0, 402, 500, 401 };
-			FillRect(hdc, &rBottom_Paint, hBrush_BorderGrey);
 
+			// Paint separator lines
 			RECT rDraw1 = { 40, 100, 460, 102 };
 			FillRect(hdc, &rDraw1, hBrush_PriDark);
 			RECT rDraw2 = { 40, 260, 460, 262 };
 			FillRect(hdc, &rDraw2, hBrush_PriDark);
 
+			// Paint window frames
+			RECT rFrames;
+			GetClientRect(hWnd, &rFrames);
+			FrameRect(hdc, &rFrames, hBrush_FrameDark);
+
 			EndPaint(hWnd, &ps);
 
-			break;
+			return (LRESULT)0;
 		}
 
 		case WM_ERASEBKGND:
 		{
+			// Manually redraw child controls that excluded by main window (Reduce Flickering)
 			RedrawWindow(ButtonCtrl_CancelTimer, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 			return (LRESULT)1;
 		}
@@ -378,43 +378,31 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 			break;
 		}
 
-		case WM_NCACTIVATE:
-		{
-			return DefWindowProcW(hWnd, WM_NCACTIVATE, 1, -1);
-		}
-
 		case WM_NCCALCSIZE:
 		{
-			if (lp)
-			{
-				NCCALCSIZE_PARAMS* sz = (NCCALCSIZE_PARAMS*)lp;
-				// sz->rgrc[0].left += rBorder.left;
-				// sz->rgrc[0].right -= rBorder.right;
-				// sz->rgrc[0].bottom -= rBorder.bottom;
-				// sz->rgrc[0].top += rBorder.top;
-				sz->rgrc[0].top += 1;
-				sz->rgrc[0].left += 1;
-				sz->rgrc[0].right -= 1;
-				sz->rgrc[0].bottom -= 0;
-				return 0;
-			}
-
-			break;
+			return (LRESULT)0; // Remove standard window frames
 		}
 
 		case WM_NCHITTEST:
 		{
+			// Default WM_NCHITTEST response
 			const LRESULT result = ::DefWindowProcW(hWnd, msg, wp, lp);
+
+			// Get title rectangle region
 			RECT lrc = RECT_Title;
+
+			// Get and map window points to track mouse location
 			POINT pt;
 			pt.x = GET_X_LPARAM(lp);
 			pt.y = GET_Y_LPARAM(lp);
 			MapWindowPoints(hWnd, NULL, reinterpret_cast<POINT*>(&lrc), (sizeof(RECT) / sizeof(POINT)));
 			
-			if (result == HTLEFT || result == HTRIGHT || result == HTTOP)	// Null size border events
+			// Disable size borders, the app is not designed for resizing
+			if (result == HTLEFT || result == HTRIGHT || result == HTTOP || result == HTBOTTOM)
 				return HTCAPTION;
 
-			if ((result == HTCLIENT) && (PtInRect(&lrc, pt)))
+			// Catch title bar events
+			if ((result == HTCLIENT) && (PtInRect(&lrc, pt))) 
 			{
 				return HTCAPTION;
 			}
@@ -434,10 +422,14 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 		case WM_WINDOWPOSCHANGED:
 		{
-			// Null all "invalid" resize events
+			// Null "invalid" resize events, the app is not designed for resizing
 			WINDOWPOS* wndpos = (WINDOWPOS*)lp;
 			if (wndpos->cx > APPLICATION_WIDTH || wndpos->cy > APPLICATION_HEIGHT)
+			{
 				SetWindowPos(hWnd, NULL, (SCREEN_WIDTH / 2) - (APPLICATION_WIDTH / 2), (SCREEN_HEIGHT / 2) - (APPLICATION_HEIGHT / 2), APPLICATION_WIDTH, APPLICATION_HEIGHT, SWP_NOZORDER);
+				return (LRESULT)0;
+			}
+			break;
 		}
 
 		case WM_KEYDOWN:
@@ -446,9 +438,10 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 			{
 				case VK_F1:
 				{
-					// MessageBoxW(NULL, L"Triggered debug WM_KEYDOWN event, exiting the program", L"[DEBUG]", MB_OK);
+					// Debug key
+					cWin32::OnExitApp(hWnd);
 					DestroyWindow(hWnd);
-					break;
+					return (LRESULT)0;
 				}
 			}
 
@@ -457,20 +450,16 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 		case WM_CLOSE:
 		{
-			/*
-			short tMB = MessageBoxW(hWnd, L"Are you sure want to quit?", L"", MB_YESNO | MB_ICONEXCLAMATION);
-			if (tMB == IDYES)
-				DestroyWindow(hWnd);
-			else return true;
-			*/
-			break;
+			cWin32::OnExitApp(hWnd);
+			DestroyWindow(hWnd);
+			return (LRESULT)0;
 		}
 
 		case WM_DESTROY:
 		{
 			delete eSol;
 			PostQuitMessage(0);
-			break;
+			return (LRESULT)0;
 		}
 
 		default:

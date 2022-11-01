@@ -37,7 +37,8 @@ extern RECT RECT_Title;
 // BRUSHES & FONTS:
 extern HBRUSH hBrush_CTLCOLORSTATIC, hBrush_CTLCOLORBTN;
 extern COLORREF CLR_PriDark, CLR_SecDark;
-extern HBRUSH hBrush_PriDark, hBrush_SecDark, hBrush_BorderGrey;
+extern COLORREF CLR_RareColor;
+extern HBRUSH hBrush_PriDark, hBrush_SecDark, hBrush_FrameDark;
 
 // STRINGS:
 extern std::wstring STR_AppTitle, STR_MB_Limit1, STR_MB_Limit2, STR_MB_AlreadyScheduled, STR_MB_Result1, STR_MB_Result2, STR_MB_Result2A;

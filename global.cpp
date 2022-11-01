@@ -36,12 +36,13 @@ HICON hIcon_Github, hIcon_Github_H;
 HICON hIcon_Confirm;
 
 // RECTS:
-RECT RECT_Title = { 0, 0, 500, 37 };
+RECT RECT_Title = { 0, 0, 502, 37 };
 
 // BRUSHES & FONTS:
 HBRUSH hBrush_CTLCOLORSTATIC, hBrush_CTLCOLORBTN;
 COLORREF CLR_PriDark = RGB(22, 22, 25), CLR_SecDark = RGB(217, 218, 222);
-HBRUSH hBrush_PriDark = CreateSolidBrush(RGB(22, 22, 25)), hBrush_SecDark = CreateSolidBrush(RGB(217, 218, 222)), hBrush_BorderGrey = CreateSolidBrush(RGB(112, 112, 112));
+COLORREF CLR_RareColor = RGB(141, 172, 160);
+HBRUSH hBrush_PriDark = CreateSolidBrush(RGB(22, 22, 25)), hBrush_SecDark = CreateSolidBrush(RGB(217, 218, 222)), hBrush_FrameDark = CreateSolidBrush(RGB(58, 49, 62));
 
 // STRINGS:
 std::wstring STR_AppTitle, STR_MB_Limit1, STR_MB_Limit2, STR_MB_AlreadyScheduled, STR_MB_Result1, STR_MB_Result2, STR_MB_Result2A;

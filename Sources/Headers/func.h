@@ -165,12 +165,12 @@ namespace cWin32
 			return false;
 		
 		SSCtrl_Close = CreateWindowW(L"STATIC", L"",
-			WS_VISIBLE | WS_CHILD | SS_NOTIFY | SS_ICON | SS_CENTERIMAGE, 442, 0, 58, 37, hWnd, (HMENU)BUTTON_CLOSE, NULL, NULL);
+			WS_VISIBLE | WS_CHILD | SS_NOTIFY | SS_ICON | SS_CENTERIMAGE, 442+1, 0+1, 58, 37-1, hWnd, (HMENU)BUTTON_CLOSE, NULL, NULL);
 		SendMessageW(SSCtrl_Close, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Close);
 		SetWindowSubclass(SSCtrl_Close, &SSButtonHover, 1, NULL);
 
 		SSCtrl_Minimize = CreateWindowW(L"STATIC", L"",
-			WS_VISIBLE | WS_CHILD | SS_NOTIFY | SS_ICON | SS_CENTERIMAGE, 384, 0, 58, 37, hWnd, (HMENU)BUTTON_MINIMIZE, NULL, NULL);
+			WS_VISIBLE | WS_CHILD | SS_NOTIFY | SS_ICON | SS_CENTERIMAGE, 384+1, 0+1, 58, 37-1, hWnd, (HMENU)BUTTON_MINIMIZE, NULL, NULL);
 		SendMessageW(SSCtrl_Minimize, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon_Minimize);
 		SetWindowSubclass(SSCtrl_Minimize, &SSButtonHover, 1, NULL);
 
@@ -353,6 +353,10 @@ namespace cWin32
 		HoverMap.insert(std::make_pair(SSCtrl_Minimize, std::make_pair(hIcon_Minimize_H, hIcon_Minimize)));
 		HoverMap.insert(std::make_pair(SSCtrl_Github, std::make_pair(hIcon_Github_H, hIcon_Github)));
 
+		// Extend window frame into client area (Enable shadow effects)
+		MARGINS borders = { 1,1,1,1 };
+		DwmExtendFrameIntoClientArea(hWnd, &borders);
+
 		return true;
 	}
 
@@ -501,6 +505,17 @@ namespace cWin32
 	{
 		UpdateWindow(MAIN_HWND);
 		RedrawWindow(MAIN_HWND, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+	}
+
+	// Extra optimizes on application exit
+	void OnExitApp(HWND hWnd)
+	{
+		// Remove WS_EX_LAYERED exstyle to bring back the window close animation
+		DWORD exStyles = GetWindowLongW(hWnd, GWL_EXSTYLE);
+		SetWindowLongW(hWnd, GWL_EXSTYLE, exStyles & ~WS_EX_LAYERED);
+		// Reverse extended frame to remove the shadows
+		MARGINS borders = { 0,0,0,0 };
+		DwmExtendFrameIntoClientArea(hWnd, &borders);
 	}
 
 	// Load application parameters from config file
